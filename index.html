@@ -3,78 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Administrasi Proyek - Shanti Villages</title>
-    <!-- Diubah ke Tailwind CSS v3 yang lebih stabil untuk HTML statis -->
+    <title>Sistem Administrasi Proyek - Prestige Vision</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for beautiful icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
         /* Print Style matching Official Code FR/PRJ/004 */
         @media print {
-            body * {
-                visibility: hidden;
-            }
-            #printArea, #printArea * {
-                visibility: visible;
-            }
+            body * { visibility: hidden; }
+            #printArea, #printArea * { visibility: visible; }
             #printArea {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                color: #000;
-                background: #fff;
-                font-family: 'Arial', sans-serif;
-                font-size: 11pt;
+                position: absolute; left: 0; top: 0; width: 100%;
+                color: #000; background: #fff; font-family: 'Times New Roman', Times, serif; font-size: 10pt;
             }
-            .no-print {
-                display: none !important;
-            }
-            table {
-                border-collapse: collapse;
-                width: 100%;
-            }
-            th, td {
-                border: 1px solid #000 !important;
-                padding: 6px !important;
-                font-size: 10pt;
-            }
-            th {
-                background-color: #f2f2f2 !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-            .print-header {
-                border: 2px solid #000;
-                margin-bottom: 15px;
-            }
-            .print-title {
-                font-size: 16pt;
-                font-weight: bold;
-                text-align: center;
-                padding: 10px;
-                border-bottom: 2px solid #000;
-            }
-            @page {
-                size: A4;
-                margin: 15mm 10mm;
-            }
+            .no-print { display: none !important; }
+            .ptable { border-collapse: collapse; width: 100%; margin-bottom: 10px; }
+            .ptable th, .ptable td { border: 1px solid #000 !important; padding: 4px 6px !important; vertical-align: top; }
+            .ptable-noborder td { border: none !important; padding: 2px 4px !important; }
+            .text-center { text-align: center; }
+            .font-bold { font-weight: bold; }
+            
+            /* Tweak margins for standard A4 */
+            @page { size: A4; margin: 10mm 15mm; }
         }
     </style>
 </head>
@@ -88,7 +42,7 @@
                     <i class="fa-solid fa-helmet-safety text-xl"></i>
                 </div>
                 <div>
-                    <h1 class="text-lg font-bold tracking-wide">SHANTI VILLAGES</h1>
+                    <h1 class="text-lg font-bold tracking-wide">PRESTIGE VISION</h1>
                     <p class="text-xs text-indigo-200">Sistem Administrasi Proyek Digital</p>
                 </div>
             </div>
@@ -121,14 +75,6 @@
                     <i class="fa-solid fa-camera text-base text-slate-400"></i>
                     <span>Dokumentasi Proyek</span>
                 </button>
-
-                <div class="pt-4 mt-4 border-t border-slate-100 bg-slate-50 p-3 rounded-lg">
-                    <div class="flex items-center space-x-2 text-xs text-slate-500 mb-1">
-                        <i class="fa-solid fa-circle-check text-emerald-500"></i>
-                        <span class="font-medium">Status Server</span>
-                    </div>
-                    <p class="text-[11px] text-slate-400 leading-relaxed">Berjalan lokal via static HTML. Siap dideploy ke Vercel.</p>
-                </div>
             </div>
         </aside>
 
@@ -142,99 +88,77 @@
                         <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
                             <i class="fa-solid fa-paste text-indigo-600"></i> Laporan Harian Konstruksi
                         </h2>
-                        <p class="text-xs text-slate-500">Isi data lapangan hari ini untuk menghasilkan berkas resmi FR/PRJ/004 & format WhatsApp.</p>
-                    </div>
-                    <div class="flex flex-wrap gap-2">
-                        <button onclick="loadSampleDailyReport()" class="bg-slate-100 text-slate-700 hover:bg-slate-200 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> Gunakan Contoh Data
-                        </button>
+                        <p class="text-xs text-slate-500">Isi data lapangan hari ini untuk cetak PDF FR/PRJ/004 & format WhatsApp otomatis.</p>
                     </div>
                 </div>
 
-                <!-- FORM INPUT LAPORAN HARIAN -->
                 <form id="dailyReportForm" class="space-y-6">
                     <!-- Metadata Proyek -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="lg:col-span-2">
                             <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nama Proyek</label>
-                            <input type="text" id="rep-project" value="Shanti Villages-Balangan" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500">
+                            <input type="text" id="rep-project" value="Shanti Villages-Balangan" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500/20">
+                        </div>
+                        <div class="lg:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Alamat Proyek</label>
+                            <input type="text" id="rep-address" value="Kuta Selatan, Badung, Bali" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500/20">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Tanggal Update</label>
-                            <input type="date" id="rep-date" value="2026-07-12" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500">
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Tanggal</label>
+                            <input type="date" id="rep-date" value="2026-07-12" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500/20">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Kondisi Cuaca</label>
-                            <select id="rep-weather" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500">
-                                <option value="Cerah (Sunny)">Cerah (Sunny)</option>
-                                <option value="Berawan (Cloudy)">Berawan (Cloudy)</option>
-                                <option value="Hujan (Rainy)">Hujan (Rainy)</option>
-                            </select>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Periode Proyek</label>
+                            <input type="text" id="rep-period" placeholder="Minggu ke-..." class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500/20">
                         </div>
+                        <div class="lg:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Cuaca & Waktu (Cerah / Berawan / Hujan)</label>
+                            <input type="text" id="rep-weather" value="Cerah: 08:00 - 17:00 WITA" placeholder="Cerah: ... s/d ..., Hujan: ... s/d ..." class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500/20">
+                        </div>
+                    </div>
+
+                    <!-- Tenaga Kerja -->
+                    <div class="space-y-3">
+                        <h3 class="text-sm font-bold text-slate-800 border-l-4 border-amber-500 pl-2">Manpower / Jumlah Pekerja (Opsional)</h3>
+                        <p class="text-[11px] text-slate-500">Sesuaikan jumlah tenaga kerja lapangan berdasarkan tim/subkontraktor yang hadir hari ini.</p>
+                        <textarea id="rep-manpower" rows="4" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500/20" placeholder="Format penulisan bebas, contoh:
+- Sipil: 5 orang
+- Subcont MEP: 3 orang
+- Subcont Cat: 2 orang"></textarea>
                     </div>
 
                     <!-- Item Pekerjaan / List Update -->
                     <div class="space-y-3">
-                        <h3 class="text-sm font-bold text-slate-800 border-l-4 border-amber-500 pl-2">Progress Pekerjaan Utama</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <h3 class="text-sm font-bold text-slate-800 border-l-4 border-amber-500 pl-2">Item Pekerjaan (Items of Work)</h3>
+                        <div class="grid grid-cols-1 gap-4">
                             <div>
-                                <label class="block text-xs font-medium text-slate-500 mb-1">Pekerjaan Villa 13</label>
-                                <textarea id="rep-villa13" rows="5" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" placeholder="Masukkan poin pekerjaan, gunakan baris baru untuk setiap poin"></textarea>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-medium text-slate-500 mb-1">Pekerjaan Villa 15</label>
-                                <textarea id="rep-villa15" rows="5" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" placeholder="Masukkan poin pekerjaan, gunakan baris baru untuk setiap poin"></textarea>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-slate-500 mb-1">Update Pekerjaan Umum Lainnya</label>
-                            <input type="text" id="rep-general" value="Update pekerjaan hari ini Juli 2026." class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500">
-                        </div>
-                    </div>
-
-                    <!-- Tenaga Kerja & Team Mandor -->
-                    <div class="space-y-3">
-                        <h3 class="text-sm font-bold text-slate-800 border-l-4 border-amber-500 pl-2">Manpower / Alokasi Tenaga Kerja</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
-                            <div>
-                                <label class="block text-xs font-medium text-slate-600 mb-1">Tim Sipil (Nama & Peran)</label>
-                                <textarea id="rep-man-civil" rows="4" class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20" placeholder="Contoh:
-Samsul (tukang)
-Wahid (kuli)"></textarea>
-                                <div class="grid grid-cols-2 gap-2 mt-2">
-                                    <input type="number" id="count-tukang" placeholder="Jml Tukang" class="w-full bg-white border border-slate-200 rounded-md p-1.5 text-xs">
-                                    <input type="number" id="count-kuli" placeholder="Jml Kuli" class="w-full bg-white border border-slate-200 rounded-md p-1.5 text-xs">
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-medium text-slate-600 mb-1">Tim Finishing Cat</label>
-                                <textarea id="rep-man-paint" rows="4" class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500/20" placeholder="Contoh:
-Agung
-Suidi"></textarea>
-                                <input type="number" id="count-paint" placeholder="Total Tim Cat" class="w-full bg-white border border-slate-200 rounded-md p-1.5 text-xs mt-2">
-                            </div>
-                            <div class="space-y-2">
-                                <div>
-                                    <label class="block text-xs font-medium text-slate-600 mb-1">Team AC (Orang)</label>
-                                    <input type="number" id="count-ac" value="3" class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-medium text-slate-600 mb-1">Team Listrik (Orang)</label>
-                                    <input type="number" id="count-elec" value="2" class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs">
-                                </div>
+                                <label class="block text-xs font-medium text-slate-500 mb-1">Daftar Pekerjaan Lapangan (Pisahkan poin dengan baris baru)</label>
+                                <textarea id="rep-work-items" rows="6" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500/20" placeholder="1. Pekejaan bowplank sikuan kolam renang
+2. Pekerjaan marking tangga kolam renang
+3. Finishing repair acian dinding"></textarea>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Alat Kerja & Material -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Notes / Alat / Material -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                            <h3 class="text-sm font-bold text-slate-800 border-l-4 border-amber-500 pl-2 mb-2">Alat Kerja Terpakai / Kondisi</h3>
-                            <textarea id="rep-tools" rows="5" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" placeholder="Masukkan daftar alat kerja (pisahkan dengan koma atau baris baru)"></textarea>
+                            <h3 class="text-sm font-bold text-slate-800 border-l-4 border-amber-500 pl-2 mb-2">Catatan (Notes)</h3>
+                            <textarea id="rep-notes" rows="6" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500/20" placeholder="Catatan Tim Lapangan yang Bertugas..."></textarea>
                         </div>
                         <div>
-                            <h3 class="text-sm font-bold text-slate-800 border-l-4 border-amber-500 pl-2 mb-2">Logistik Material Masuk / Digunakan</h3>
-                            <textarea id="rep-materials" rows="5" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" placeholder="Masukkan daftar material (pisahkan dengan koma atau baris baru)"></textarea>
+                            <h3 class="text-sm font-bold text-slate-800 border-l-4 border-amber-500 pl-2 mb-2">Peralatan Kerja</h3>
+                            <textarea id="rep-tools" rows="6" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500/20" placeholder="Pisahkan dengan baris baru. Contoh:
+1. Mesin las
+2. Gerinda
+3. Bor"></textarea>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-800 border-l-4 border-amber-500 pl-2 mb-2">Material / Logistik</h3>
+                            <textarea id="rep-materials" rows="6" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500/20" placeholder="Pisahkan dengan baris baru. Contoh:
+1. Semen 5 sak
+2. Pasir 1 engkel
+3. Besi ulir"></textarea>
                         </div>
                     </div>
 
@@ -244,7 +168,7 @@ Suidi"></textarea>
                             <i class="fa-brands fa-whatsapp text-lg"></i> Format ke WhatsApp
                         </button>
                         <button type="button" onclick="processPDFExport(false)" class="bg-indigo-600 text-white hover:bg-indigo-700 px-4 py-2.5 rounded-lg text-sm font-medium shadow-sm transition-colors flex items-center gap-2">
-                            <i class="fa-solid fa-file-pdf"></i> Cetak / Simpan PDF (Indo)
+                            <i class="fa-solid fa-file-pdf"></i> Cetak / Simpan PDF
                         </button>
                         <button type="button" onclick="processPDFExport(true)" class="bg-amber-500 text-indigo-950 hover:bg-amber-600 px-4 py-2.5 rounded-lg text-sm font-bold shadow-sm transition-colors flex items-center gap-2">
                             <i class="fa-solid fa-language"></i> Translate & Cetak PDF (EN)
@@ -255,59 +179,28 @@ Suidi"></textarea>
 
             <!-- TAB 2: PURCHASE ORDER (PO) -->
             <section id="purchase-order-tab" class="tab-content hidden bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-6">
+                <!-- Konten PO sama seperti sebelumnya, dipadatkan -->
                 <div>
                     <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
                         <i class="fa-solid fa-cart-shopping text-indigo-600"></i> Pengadaan Material & Alat (Purchase Order)
                     </h2>
-                    <p class="text-xs text-slate-500">Buat permintaan PO logistik proyek, rekam otomatis ke dalam sistem, dan teruskan ke WhatsApp purchasing.</p>
                 </div>
-
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- Form Pengisian PO -->
                     <form id="poForm" class="lg:col-span-2 space-y-4 bg-slate-50 p-5 rounded-xl border border-slate-100">
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Proyek</label>
-                                <input type="text" id="po-project" value="Shanti Village" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal Kebutuhan</label>
-                                <input type="date" id="po-date" value="2026-07-12" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">Kode PO (Otomatis/Manual)</label>
-                                <input type="text" id="po-code" value="PO02" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm font-mono font-bold text-indigo-700">
-                            </div>
+                            <div><label class="block text-xs font-semibold text-slate-600 mb-1">Nama Proyek</label><input type="text" id="po-project" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm"></div>
+                            <div><label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal</label><input type="date" id="po-date" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm"></div>
+                            <div><label class="block text-xs font-semibold text-slate-600 mb-1">Kode PO</label><input type="text" id="po-code" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm font-mono font-bold text-indigo-700"></div>
                         </div>
+                        <div><label class="block text-xs font-semibold text-slate-600 mb-1">Judul Pengadaan</label><input type="text" id="po-title" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm"></div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Judul / Pengadaan Berupa</label>
-                            <input type="text" id="po-title" value="Pengadaan kertas A3" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm" placeholder="Contoh: Pembelian semen tigaroda">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Daftar Item Kebutuhan (Format: Nama Barang #Jumlah Satuan)</label>
-                            <textarea id="po-items" rows="4" class="w-full bg-white border border-slate-200 rounded-lg p-3 text-sm focus:outline-none" placeholder="Kertas A3 70gsm #2 rim&#10;Semen Padang #50 sak"></textarea>
-                            <p class="text-[11px] text-slate-400 mt-1">Gunakan karakter pagar (#) untuk memisahkan kuantitas barang agar tampilan rapi.</p>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Daftar Item Kebutuhan</label>
+                            <textarea id="po-items" rows="4" class="w-full bg-white border border-slate-200 rounded-lg p-3 text-sm focus:outline-none"></textarea>
                         </div>
                         <div class="flex gap-2 justify-end pt-2">
-                            <button type="button" onclick="savePurchaseOrder()" class="bg-indigo-900 text-white hover:bg-indigo-950 px-4 py-2 rounded-lg text-xs font-medium transition-colors">
-                                <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Ke Storage
-                            </button>
-                            <button type="button" onclick="generatePOWA()" class="bg-emerald-600 text-white hover:bg-emerald-700 px-4 py-2 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5">
-                                <i class="fa-brands fa-whatsapp text-sm"></i> Kirim Format WA
-                            </button>
+                            <button type="button" onclick="generatePOWA()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-medium">Kirim Format WA</button>
                         </div>
                     </form>
-
-                    <!-- Riwayat PO Terdaftar -->
-                    <div class="space-y-3">
-                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Log Riwayat PO (LocalStorage)</h3>
-                        <div id="po-logs-list" class="space-y-2 max-h-80 overflow-y-auto pr-1">
-                            <!-- PO list cards render here via JS -->
-                            <div class="text-center py-6 text-xs text-slate-400 bg-slate-50 rounded-lg border border-dashed border-slate-200">
-                                Belum ada riwayat PO tersimpan hari ini.
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </section>
 
@@ -315,48 +208,46 @@ Suidi"></textarea>
             <section id="documentation-tab" class="tab-content hidden bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-6">
                 <div>
                     <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
-                        <i class="fa-solid fa-camera text-indigo-600"></i> Kamera Dokumentasi Lapangan Otomatis
+                        <i class="fa-solid fa-camera text-indigo-600"></i> Dokumentasi Lapangan Otomatis
                     </h2>
-                    <p class="text-xs text-slate-500">Ambil foto progress proyek langsung dari lapangan. Sistem akan otomatis menyematkan watermark Waktu, Tanggal, dan Lokasi secara real-time.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Sisi Kontrol Pengunggahan / Kamera -->
-                    <div class="space-y-4 bg-slate-50 p-5 rounded-xl border border-slate-100 flex flex-col justify-between">
-                        <div class="space-y-3">
+                    <div class="space-y-5 bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                        <div class="space-y-4">
                             <div>
                                 <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Lokasi / Area Detail Proyek</label>
-                                <input type="text" id="doc-location-name" value="Villa 13 - Living Area & Decking" class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm" placeholder="Contoh: Area Kolam Renang Villa 15">
+                                <input type="text" id="doc-location-name" value="Villa 13 - Living Area" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm">
                             </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">Ambil Gambar / Upload Berkas</label>
-                                <input type="file" id="doc-file-input" accept="image/*" capture="environment" onchange="processProjectPhoto(event)" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer">
+                            
+                            <!-- Desain GPS Button Profesional -->
+                            <div class="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-xs font-semibold text-slate-600">Koordinat Geografis</span>
+                                    <button type="button" onclick="requestGPSLocation()" class="bg-indigo-600 text-white hover:bg-indigo-700 px-3 py-1.5 rounded-md text-xs font-medium transition-colors flex items-center gap-2">
+                                        <i class="fa-solid fa-location-crosshairs"></i> Deteksi Lokasi
+                                    </button>
+                                </div>
+                                <div class="flex items-center gap-2 p-2 bg-white rounded border border-slate-100">
+                                    <i class="fa-solid fa-satellite-dish text-slate-400"></i>
+                                    <p id="gps-status" class="text-xs font-mono text-slate-500 truncate">Menunggu input lokasi...</p>
+                                </div>
                             </div>
-                            <div class="pt-2">
-                                <button type="button" onclick="requestGPSLocation()" class="w-full bg-slate-200 text-slate-700 hover:bg-slate-300 px-3 py-2 rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1.5">
-                                    <i class="fa-solid fa-location-crosshairs text-amber-600"></i> Sinkronisasi Koordinat GPS Otomatis
-                                </button>
-                                <p id="gps-status" class="text-[10px] text-center text-slate-500 mt-1">Koordinat belum dimuat (menggunakan waktu lokal perangkat)</p>
-                            </div>
-                        </div>
 
-                        <div class="bg-amber-50 rounded-lg p-3 border border-amber-200 text-xs text-amber-800 space-y-1 mt-4">
-                            <div class="font-bold flex items-center gap-1"><i class="fa-solid fa-cloud-arrow-up"></i> Catatan Integrasi Google Drive:</div>
-                            <p class="leading-relaxed text-[11px]">Karena Vercel berjalan sebagai platform statis, nama file hasil olahan akan disesuaikan otomatis mengikuti pola regulasi manajemen proyek agar seragam saat anda unggah ke folder Google Drive perusahaan.</p>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih / Ambil Gambar</label>
+                                <input type="file" id="doc-file-input" accept="image/*" capture="environment" onchange="processProjectPhoto(event)" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-white hover:file:bg-slate-700 cursor-pointer">
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Ruang Hasil Pengolahan Gambar / Watermark Canvas -->
                     <div class="flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-xl p-4 bg-slate-50 min-h-64 relative">
-                        <p id="canvas-placeholder" class="text-xs text-slate-400 text-center py-12"><i class="fa-solid fa-image text-3xl block mb-2 text-slate-300"></i>Pratinjau foto beserta stamp otomatis akan muncul di sini setelah file dipilih.</p>
+                        <p id="canvas-placeholder" class="text-xs text-slate-400 text-center py-12"><i class="fa-solid fa-image text-3xl block mb-2 text-slate-300"></i>Pratinjau foto beserta stamp otomatis akan muncul di sini.</p>
                         <canvas id="watermarkCanvas" class="max-w-full max-h-96 rounded-lg shadow-md hidden bg-white"></canvas>
                         
                         <div id="download-doc-area" class="w-full mt-4 hidden">
-                            <div class="text-xs font-mono bg-slate-800 text-emerald-400 p-2 rounded-md mb-2 overflow-x-auto whitespace-nowrap" id="generated-filename-label">
-                                Nama File: -
-                            </div>
-                            <button onclick="downloadStampedPhoto()" class="w-full bg-indigo-600 text-white hover:bg-indigo-700 py-2 rounded-lg text-xs font-bold transition-colors flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-download"></i> Unduh Foto Ber-Watermark Resmi
+                            <button onclick="downloadStampedPhoto()" class="w-full bg-emerald-600 text-white hover:bg-emerald-700 py-2.5 rounded-lg text-sm font-bold transition-colors flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-download"></i> Simpan Gambar Profesional
                             </button>
                         </div>
                     </div>
@@ -365,467 +256,294 @@ Suidi"></textarea>
         </main>
     </div>
 
-    <!-- PRINT VIEW AREA -->
+    <!-- PRINT VIEW AREA (EXACT FR/PRJ/004 MATCH) -->
     <div id="printArea" class="hidden">
-        <!-- Professional Official Header Document Form FR/PRJ/004 -->
-        <div class="print-header">
-            <table style="width: 100%; border-bottom: 2px solid #000; margin: 0;">
-                <tr>
-                    <td rowspan="2" style="width: 25%; text-align: center; vertical-align: middle; font-weight: bold; font-size: 14pt;">
-                        PRESTIGE VISION
-                    </td>
-                    <td rowspan="2" style="width: 45%; text-align: center; vertical-align: middle; font-weight: bold; font-size: 15pt; letter-spacing: 1px;">
-                        LAPORAN HARIAN<br><span style="font-size: 11pt; font-style: italic; font-weight: normal;">(Daily Report)</span>
-                    </td>
-                    <td style="width: 13%; font-size: 8pt; padding: 2px 5px !important;">KODE DOKUMEN</td>
-                    <td style="width: 17%; font-size: 8pt; padding: 2px 5px !important;">: FR/PRJ/004</td>
-                </tr>
-                <tr>
-                    <td style="font-size: 8pt; padding: 2px 5px !important;">MULAI BERLAKU</td>
-                    <td style="font-size: 8pt; padding: 2px 5px !important;">: 2025</td>
-                </tr>
-                <tr>
-                    <td style="font-size: 8pt; text-align: center; padding: 2px !important;">PRESTIGE VISION BUILDER</td>
-                    <td style="font-size: 8pt; text-align: center; font-style: italic; padding: 2px !important;">Manajemen Proyek Konstruksi Terpadu</td>
-                    <td style="font-size: 8pt; padding: 2px 5px !important;">REVISI / TGL REV</td>
-                    <td style="font-size: 8pt; padding: 2px 5px !important;">: 00 / -</td>
-                </tr>
-            </table>
-        </div>
-
-        <!-- Project Meta Information Block -->
-        <table style="width: 100%; margin-bottom: 15px;">
+        
+        <!-- Document Header (FR/PRJ/004) -->
+        <table class="ptable" style="margin-bottom: 15px;">
             <tr>
-                <td style="width: 18%; font-weight: bold; background-color: #f9f9f9;">NAMA PROYEK<br><span style="font-size: 8pt; font-weight: normal; font-style: italic;">(Project Name)</span></td>
-                <td style="width: 32%;" id="p-view-project">Shanti Villages-Balangan</td>
-                <td style="width: 18%; font-weight: bold; background-color: #f9f9f9;">TANGGAL<br><span style="font-size: 8pt; font-weight: normal; font-style: italic;">(Date)</span></td>
-                <td style="width: 32%;" id="p-view-date">12 Juli 2026</td>
+                <td rowspan="4" class="text-center font-bold" style="width: 20%; vertical-align: middle; font-size: 14pt;">PRESTIGE VISION</td>
+                <td rowspan="4" class="text-center font-bold" style="width: 40%; vertical-align: middle; font-size: 14pt;">LAPORAN HARIAN<br><span style="font-size: 11pt; font-weight: normal;">(Daily Report)</span></td>
+                <td style="width: 20%; font-size: 8pt;">KODE DOKUMEN</td>
+                <td style="width: 20%; font-size: 8pt;">: FR/PRJ/004</td>
             </tr>
             <tr>
-                <td style="font-weight: bold; background-color: #f9f9f9;">ALAMAT PROYEK<br><span style="font-size: 8pt; font-weight: normal; font-style: italic;">(Project Address)</span></td>
-                <td>Kuta Selatan, Badung, Bali</td>
-                <td style="font-weight: bold; background-color: #f9f9f9;">KONDISI CUACA<br><span style="font-size: 8pt; font-weight: normal; font-style: italic;">(Weather Condition)</span></td>
-                <td id="p-view-weather">Cerah (Sunny)</td>
+                <td style="font-size: 8pt;">MULAI BERLAKU</td>
+                <td style="font-size: 8pt;">: 2025</td>
+            </tr>
+            <tr>
+                <td style="font-size: 8pt;">REVISI</td>
+                <td style="font-size: 8pt;">: 00</td>
+            </tr>
+            <tr>
+                <td style="font-size: 8pt;">TANGGAL REVISI</td>
+                <td style="font-size: 8pt;">: -</td>
             </tr>
         </table>
 
-        <!-- Manpower / Tenaga Kerja Section -->
-        <h4 style="margin: 10px 0 5px 0; font-size: 11pt; border-bottom: 1px solid #000; padding-bottom: 2px; font-weight: bold;">
-            JUMLAH PEKERJA <span style="font-size: 9pt; font-weight: normal; font-style: italic;">(Number of Workman)</span>
-        </h4>
-        <table style="width: 100%; margin-bottom: 15px; text-align: center;">
-            <thead>
-                <tr style="background-color: #f2f2f2;">
-                    <th style="width: 30%;">Kategori Tim / Subkontraktor</th>
-                    <th style="width: 40%;">Alokasi Personil Lapangan</th>
-                    <th style="width: 30%;">Total Kuota Mandor</th>
-                </tr>
-            </thead>
-            <tbody id="p-view-manpower-table">
-                <!-- Injected via script -->
-            </tbody>
+        <!-- Project Info -->
+        <table class="ptable" style="margin-bottom: 15px;">
+            <tr>
+                <td style="width: 15%; font-weight: bold; background-color: #f9f9f9;">NAMA PROYEK<br><span style="font-size: 8pt; font-weight: normal;">(Project Name)</span></td>
+                <td style="width: 35%;" id="p-view-project">: -</td>
+                <td style="width: 15%; font-weight: bold; background-color: #f9f9f9;">TANGGAL<br><span style="font-size: 8pt; font-weight: normal;">(Date)</span></td>
+                <td style="width: 35%;" id="p-view-date">: -</td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold; background-color: #f9f9f9;">ALAMAT PROYEK<br><span style="font-size: 8pt; font-weight: normal;">(Project Address)</span></td>
+                <td id="p-view-address">: -</td>
+                <td style="font-weight: bold; background-color: #f9f9f9;">PERIODE<br><span style="font-size: 8pt; font-weight: normal;">(Period)</span></td>
+                <td id="p-view-period">: -</td>
+            </tr>
         </table>
 
-        <!-- Main Items of Work / Progress Item -->
-        <h4 style="margin: 10px 0 5px 0; font-size: 11pt; border-bottom: 1px solid #000; padding-bottom: 2px; font-weight: bold;">
-            ITEM PROGRESS PEKERJAAN <span style="font-size: 9pt; font-weight: normal; font-style: italic;">(Items of Work Description)</span>
-        </h4>
-        <table style="width: 100%; margin-bottom: 15px;">
+        <!-- Weather & Manpower -->
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
+            <tr>
+                <td style="width: 50%; vertical-align: top; padding-right: 5px;">
+                    <table class="ptable" style="margin: 0; height: 100%;">
+                        <tr><td colspan="3" style="background-color: #f9f9f9; font-weight: bold; text-align: center;">Kondisi Cuaca & Kondisi Khusus :<br><span style="font-size: 8pt; font-weight: normal;">(Weather Condition & Special Condition)</span></td></tr>
+                        <tr>
+                            <td class="text-center font-bold">Kondisi<br><span style="font-size: 8pt; font-weight: normal;">(Condition)</span></td>
+                            <td class="text-center font-bold">Durasi/Waktu<br><span style="font-size: 8pt; font-weight: normal;">(Duration/Time)</span></td>
+                        </tr>
+                        <tr>
+                            <td>Cerah (Sunny)</td><td id="p-view-w-sunny" class="text-center">.......... s/d ..........</td>
+                        </tr>
+                        <tr>
+                            <td>Berawan (Cloudy)</td><td id="p-view-w-cloudy" class="text-center">.......... s/d ..........</td>
+                        </tr>
+                        <tr>
+                            <td>Hujan (Rainy)</td><td id="p-view-w-rainy" class="text-center">.......... s/d ..........</td>
+                        </tr>
+                    </table>
+                </td>
+                <td style="width: 50%; vertical-align: top; padding-left: 5px;">
+                    <table class="ptable" style="margin: 0; height: 100%;">
+                        <tr><td style="background-color: #f9f9f9; font-weight: bold;">JUMLAH PEKERJA (Number of Workman):</td></tr>
+                        <tr>
+                            <td id="p-view-manpower" style="height: 75px; white-space: pre-wrap; font-size: 9pt;">Sipil (Civil) : ....... orang<br>Subcont : ....... orang</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+        <!-- Work Items -->
+        <table class="ptable" style="margin-bottom: 15px;">
             <thead>
-                <tr style="background-color: #f2f2f2;">
-                    <th style="width: 5%; text-align: center;">No</th>
-                    <th style="width: 45%;">Item Pekerjaan <span style="font-weight: normal; font-style: italic; font-size: 8.5pt;">(Item of Work)</span></th>
-                    <th style="width: 50%;">Keterangan Capaian Lapangan <span style="font-weight: normal; font-style: italic; font-size: 8.5pt;">(Remark & Field Status)</span></th>
+                <tr style="background-color: #f9f9f9; text-align: center; font-weight: bold;">
+                    <th style="width: 5%;">No</th>
+                    <th style="width: 55%;">Item Pekerjaan<br><span style="font-size: 8pt; font-weight: normal;">Item of Work</span></th>
+                    <th style="width: 40%;">Keterangan<br><span style="font-size: 8pt; font-weight: normal;">Remark</span></th>
                 </tr>
             </thead>
             <tbody id="p-view-work-items">
-                <!-- Dynamic generation -->
+                <!-- Injected via JS -->
+                <tr><td class="text-center">1</td><td>-</td><td>-</td></tr>
             </tbody>
         </table>
 
-        <!-- Resources Log: Tools and Materials -->
-        <div style="display: flex; gap: 15px; margin-bottom: 20px;">
-            <div style="flex: 1;">
-                <h5 style="margin: 0 0 5px 0; font-size: 10pt; font-weight: bold; background-color: #e6e6e6; padding: 4px; border: 1px solid #000;">
-                    PERALATAN KERJA DI LAPANGAN <span style="font-size: 8pt; font-weight: normal; font-style: italic;">(Item of Equipment)</span>
-                </h5>
-                <div id="p-view-tools" style="border: 1px solid #000; border-top: none; padding: 8px; font-size: 9.5pt; min-height: 100px; white-space: pre-line; line-height: 1.4;">
-                </div>
-            </div>
-            <div style="flex: 1;">
-                <h5 style="margin: 0 0 5px 0; font-size: 10pt; font-weight: bold; background-color: #e6e6e6; padding: 4px; border: 1px solid #000;">
-                    MATERIAL LOGISTIK MASUK <span style="font-size: 8pt; font-weight: normal; font-style: italic;">(Item of Material)</span>
-                </h5>
-                <div id="p-view-materials" style="border: 1px solid #000; border-top: none; padding: 8px; font-size: 9.5pt; min-height: 100px; white-space: pre-line; line-height: 1.4;">
-                </div>
-            </div>
-        </div>
+        <!-- Notes -->
+        <table class="ptable" style="margin-bottom: 15px;">
+            <tr>
+                <td colspan="2" style="background-color: #f9f9f9; font-weight: bold;">Catatan Tim Lapangan yang Bertugas :<br><span style="font-size: 8pt; font-weight: normal;">(Notes from Employer's Representative):</span></td>
+            </tr>
+            <tr>
+                <td style="width: 25%; font-weight: bold; text-align: center;">Posisi<br><span style="font-size: 8pt; font-weight: normal;">(Position)</span></td>
+                <td style="width: 75%; font-weight: bold; text-align: center;">Catatan<br><span style="font-size: 8pt; font-weight: normal;">(Notes)</span></td>
+            </tr>
+            <tr>
+                <td style="text-align: center; font-weight: bold;">: PM/SM/SE/Site Spv</td>
+                <td id="p-view-notes" style="min-height: 50px; white-space: pre-wrap;">-</td>
+            </tr>
+        </table>
 
-        <!-- Official Signatures Block -->
-        <table style="width: 100%; text-align: center; margin-top: 40px; border: none !important;">
-            <tr style="border: none !important;">
-                <td style="width: 33.3%; border: none !important; padding: 0 10px;">
-                    <p style="font-size: 9.5pt; margin-bottom: 50px;">Dibuat oleh,<br><span style="font-style: italic; font-size: 8.5pt;">(Proposed by)</span></p>
-                    <p style="text-decoration: underline; font-weight: bold; margin-bottom: 2px;">.........................................</p>
-                    <p style="font-size: 8.5pt; color: #333;">Site Engineer / Site Spv</p>
+        <!-- Equipment & Material -->
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
+            <tr>
+                <td style="width: 50%; vertical-align: top; padding-right: 5px;">
+                    <table class="ptable" style="margin: 0;">
+                        <tr><td colspan="2" style="background-color: #f9f9f9; font-weight: bold; text-align: center;">Peralatan Kerja<br><span style="font-size: 8pt; font-weight: normal;">Item of Equipment</span></td></tr>
+                        <tbody id="p-view-tools-list">
+                            <!-- Injected JS 1 to 10 -->
+                        </tbody>
+                    </table>
                 </td>
-                <td style="width: 33.3%; border: none !important; padding: 0 10px;">
-                    <p style="font-size: 9.5pt; margin-bottom: 50px;">Diketahui oleh,<br><span style="font-style: italic; font-size: 8.5pt;">(Known by)</span></p>
-                    <p style="text-decoration: underline; font-weight: bold; margin-bottom: 2px;">.........................................</p>
-                    <p style="font-size: 8.5pt; color: #333;">Project Manager / Site Manager</p>
+                <td style="width: 50%; vertical-align: top; padding-left: 5px;">
+                    <table class="ptable" style="margin: 0;">
+                        <tr><td colspan="2" style="background-color: #f9f9f9; font-weight: bold; text-align: center;">Material<br><span style="font-size: 8pt; font-weight: normal;">Item of Material</span></td></tr>
+                        <tbody id="p-view-mats-list">
+                            <!-- Injected JS 1 to 10 -->
+                        </tbody>
+                    </table>
                 </td>
-                <td style="width: 33.3%; border: none !important; padding: 0 10px;">
-                    <p style="font-size: 9.5pt; margin-bottom: 50px;">Diterima oleh,<br><span style="font-style: italic; font-size: 8.5pt;">(Received by)</span></p>
-                    <p style="text-decoration: underline; font-weight: bold; margin-bottom: 2px;">.........................................</p>
-                    <p style="font-size: 8.5pt; color: #333;">Owner / Consultant Representative</p>
-                </td>
+            </tr>
+        </table>
+
+        <!-- Signatures -->
+        <table class="ptable ptable-noborder" style="text-align: center; margin-top: 20px;">
+            <tr>
+                <td style="width: 33.3%;">Dibuat oleh,<br><span style="font-size: 8pt;">(Proposed by),</span></td>
+                <td style="width: 33.3%;">Diketahui oleh,<br><span style="font-size: 8pt;">(Known by),</span></td>
+                <td style="width: 33.3%;">Diterima oleh,<br><span style="font-size: 8pt;">(Received by),</span></td>
+            </tr>
+            <tr>
+                <td style="height: 60px;"></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold; border-bottom: 1px solid black !important; display: inline-block; width: 80%;"></td>
+                <td style="font-weight: bold; border-bottom: 1px solid black !important; display: inline-block; width: 80%;"></td>
+                <td style="font-weight: bold; border-bottom: 1px solid black !important; display: inline-block; width: 80%;"></td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold;">Site Engineer/ Site Spv</td>
+                <td style="font-weight: bold;">Project Manager/ Site Manager</td>
+                <td style="font-weight: bold;">Owner/Consultant</td>
+            </tr>
+            <tr>
+                <td>Tanggal (Date): .....................</td>
+                <td>Tanggal (Date): .....................</td>
+                <td>Tanggal (Date): .....................</td>
             </tr>
         </table>
     </div>
 
-    <!-- FOOTER DEVELOPMENT -->
-    <footer class="bg-slate-800 text-slate-400 py-3 text-center text-xs mt-auto no-print border-t border-slate-700">
-        &copy; 2026 Adminstrasi Proyek Terintegrasi. Designed for Notepad text edit & Vercel deployment.
-    </footer>
-
     <!-- LOGIC APPLICATION CORE -->
     <script>
-        // Dictionary for automated simple field translation to support EN PDF generation
+        // Simple mock translation dictionary
         const translationDict = {
-            "instalasi air bersih area barberque": "Clean water pipe installation in barbeque area",
-            "instalasi pipa air kotor area barberque": "Waste water pipe installation in barbeque area",
-            "instalasi air hujan area decking dan living outdoor": "Rainwater drainage pipe installation in decking and outdoor living area",
-            "instalasi elektrikal setting posisi saklar dan outlet.": "Electrical installation for switch and outlet positioning setup",
-            "instalasi panel MCB.": "MCB panel board assembly and connection",
-            "tes comisioning.": "Testing and system commissioning execution",
-            "Pekerjaan tangga shower outdoor": "Construction of concrete outdoor shower stairs",
-            "Pekerjaan finishing lis U skirting": "Finishing works for aluminum U-skirting profiles",
-            "pekejaan bowplank sikuan kolam renang": "Setting up building layout profiles (bowplank) for swimming pool squaring",
-            "pekerjaan marking tangga kolam renang": "Measuring and marking guidelines for swimming pool steps",
-            "Finishing repair acian dinding": "Repairing and touching up wall plaster coats",
-            "Finishing gosok acian dinding.": "Sanding and polishing smooth wall finishes",
-            "Update pekerjaan hari ini  Juli 2026.": "Today's standard construction updates for July 2026."
+            "Pekerjaan bowplank sikuan kolam renang": "Setting up building layout profiles for pool",
+            "Pekerjaan marking tangga kolam renang": "Marking swimming pool stairs",
+            "Finishing repair acian dinding": "Wall plaster finish repairing"
         };
 
-        // Navigation Tab Switching Functionality
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
             document.getElementById(tabId).classList.remove('hidden');
-            
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('bg-indigo-50', 'text-indigo-700', 'shadow-sm');
                 btn.classList.add('text-slate-600', 'hover:bg-slate-50');
                 const icon = btn.querySelector('i');
-                if(icon) { icon.classList.replace('text-indigo-600', 'text-slate-400'); }
+                if(icon) icon.classList.replace('text-indigo-600', 'text-slate-400');
             });
-
             const activeBtn = document.getElementById('btn-' + tabId);
             activeBtn.classList.add('bg-indigo-50', 'text-indigo-700', 'shadow-sm');
             activeBtn.classList.remove('text-slate-600', 'hover:bg-slate-50');
             const activeIcon = activeBtn.querySelector('i');
-            if(activeIcon) { activeIcon.classList.replace('text-slate-400', 'text-indigo-600'); }
+            if(activeIcon) activeIcon.classList.replace('text-slate-400', 'text-indigo-600');
         }
 
-        // Feature 1: Load sample dummy dataset to simplify user testing
-        function loadSampleDailyReport() {
-            document.getElementById('rep-villa13').value = 
-                "* instalasi air bersih area barberque\n" +
-                "* instalasi pipa air kotor area barberque\n" +
-                "* instalasi air hujan area decking dan living outdoor\n" +
-                "* instalasi elektrikal setting posisi saklar dan outlet.\n" +
-                "* instalasi panel MCB.\n" +
-                "* tes comisioning.\n" +
-                "* Pekerjaan tangga shower outdoor\n" +
-                "* Pekerjaan finishing lis U skirting";
-
-            document.getElementById('rep-villa15').value = 
-                "* pekejaan bowplank sikuan kolam renang\n" +
-                "* pekerjaan marking tangga kolam renang\n" +
-                "* Finishing repair acian dinding\n" +
-                "* Finishing gosok acian dinding.";
-
-            document.getElementById('rep-man-civil').value = 
-                "Samsul (tukang)\nSlamet R (tukang)\nzakiyak (tukang plumbing)\nWahid (kuli)\nM.Riko (kuli plumbing)\nPuji widodo (kuli)";
-            
-            document.getElementById('count-tukang').value = 3;
-            document.getElementById('count-kuli').value = 3;
-
-            document.getElementById('rep-man-paint').value = "Agung\nsuidi\nHusein";
-            document.getElementById('count-paint').value = 3;
-
-            document.getElementById('rep-tools').value = "jack hammer, rotary drill incco (*urgent perlu tambahan*), bor kecil kabel, bor baterai, gerinda, mesin las, Cangkul, sekop, arco, waterpass mistar, scaffolding, vibrator, waterpass laser, gunting pipa, Ducting kit, Gunting baja, waterpass selang, elemen heater PPR kit (perlu repair )";
-            
-            // Menggunakan backtick (`) agar penggunaan tanda kutip ganda pada string tidak rusak
-            document.getElementById('rep-materials').value = `pasir, Semen, clamp pipa, kabel ties, resibon, Panel ducting, lem kuning, cutter, pipa PPR ½", pipa PPR ¾", fiting pipa PPR, pipa PVC AW 4", pipa PVC AW 3", pipa PVC AW 1-½", fiting pipa PVC, lem pipa PVC, Dynaset M6,8,10, longdrat M6,8,10, Inbowdoos Schneider, panel MDP, MCB kit.`;
-            
-            alert('Contoh data laporan harian berhasil disuntikkan ke dalam form!');
-        }
-
-        // Feature 1: WhatsApp daily report text compiler
+        // Generate WA Format for target 081235728600
         function generateReportWA() {
             const project = document.getElementById('rep-project').value;
+            const address = document.getElementById('rep-address').value;
             const dateVal = document.getElementById('rep-date').value;
             const formattedDate = dateVal ? formatDateIndo(dateVal) : '12 Juli 2026';
             
             let text = `PROJECT'S UPDATE 🌟\nLaporan Harian _daily report_ 📒\n\n`;
-            text += `Project : ${project}\n`;
-            text += `List Update : ${formattedDate}\n`;
-            text += `1. ${document.getElementById('rep-general').value}\n\n`;
+            text += `Project : ${project}\nAlamat : ${address}\nTanggal : ${formattedDate}\n\n`;
             
-            // Build progress breakdown
-            if(document.getElementById('rep-villa13').value.trim()) {
-                text += `2. Pekerjaan villa 13 :\n${document.getElementById('rep-villa13').value.trim()}\n\n`;
-            }
-            if(document.getElementById('rep-villa15').value.trim()) {
-                text += `3. Pekerjaan villa 15 :\n${document.getElementById('rep-villa15').value.trim()}\n\n`;
-            }
+            text += `1. Progress Lapangan :\n${document.getElementById('rep-work-items').value.trim() || '-'}\n\n`;
+            text += `2. Manpower (Tenaga Kerja) :\n${document.getElementById('rep-manpower').value.trim() || '-'}\n\n`;
+            text += `3. Catatan Tambahan (Notes) :\n${document.getElementById('rep-notes').value.trim() || '-'}\n\n`;
             
-            // Manpower calculation format mapping
-            text += `4. Tenaga kerja sipil :\n`;
-            const civilList = document.getElementById('rep-man-civil').value.trim().split('\n');
-            civilList.forEach(name => { if(name) text += `* ${name}\n`; });
-            
-            const tk = document.getElementById('count-tukang').value || 0;
-            const kl = document.getElementById('count-kuli').value || 0;
-            text += `\nTotal : ${parseInt(tk)+parseInt(kl)} orang\nTukang = ${tk} orang\nKuli = ${kl} orang\n\n`;
-            
-            if(document.getElementById('rep-man-paint').value.trim()) {
-                text += `5. Team finishing cat :\n`;
-                const paintList = document.getElementById('rep-man-paint').value.trim().split('\n');
-                paintList.forEach(name => { if(name) text += `* ${name}\n`; });
-                text += `Total team Cat : ${document.getElementById('count-paint').value || 0} orang.\n\n`;
-            }
-            
-            text += `6. Team AC : ${document.getElementById('count-ac').value || 0} orang\n`;
-            text += `7. Team listrik : ${document.getElementById('count-elec').value || 0} orang\n\n`;
-            
-            // Resource assets
-            text += `8. Alat kerja :\n`;
-            const tools = document.getElementById('rep-tools').value.split(/[,\n]/);
-            tools.forEach(t => { if(t.trim()) text += `* ${t.trim()}\n`; });
-            text += `\n`;
-            
-            text += `9. Material :\n`;
-            const mats = document.getElementById('rep-materials').value.split(/[,\n]/);
-            mats.forEach(m => { if(m.trim()) text += `* ${m.trim()}\n`; });
+            text += `4. Alat Kerja :\n${document.getElementById('rep-tools').value.trim() || '-'}\n\n`;
+            text += `5. Material / Logistik :\n${document.getElementById('rep-materials').value.trim() || '-'}\n`;
 
-            // Forward text straight into user system clipboard and open WhatsApp link redirect
-            copyToClipboard(text);
-            const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+            const waNumber = '6281235728600'; // Target Number explicitly
+            const waUrl = `https://api.whatsapp.com/send?phone=${waNumber}&text=${encodeURIComponent(text)}`;
             window.open(waUrl, '_blank');
         }
 
-        // Helper function for translating field lines on the fly for English PDF mode
         function translateLine(line) {
-            let clean = line.replace(/^\*\s*/, '').replace(/^-\s*/, '').trim();
-            if(translationDict[clean]) {
-                return translationDict[clean];
-            }
-            // Simple string replacement strategy for missing items
-            return clean;
+            let clean = line.replace(/^\d+\.\s*/, '').trim();
+            return translationDict[clean] ? translationDict[clean] : clean;
         }
 
-        // Feature 1: Official Corporate Layout Engine (FR/PRJ/004) Generator & Engine Trigger
+        // Print PDF Engine Matching FR/PRJ/004
         function processPDFExport(enableTranslation) {
-            // Update Text Node Metadata Fields inside layout block
-            document.getElementById('p-view-project').innerText = document.getElementById('rep-project').value;
-            const rawDate = document.getElementById('rep-date').value;
-            document.getElementById('p-view-date').innerText = rawDate ? formatDateIndo(rawDate) : '12 Juli 2026';
-            document.getElementById('p-view-weather').innerText = document.getElementById('rep-weather').value;
+            // Header Info
+            document.getElementById('p-view-project').innerText = `: ${document.getElementById('rep-project').value}`;
+            document.getElementById('p-view-address').innerText = `: ${document.getElementById('rep-address').value}`;
+            const rDate = document.getElementById('rep-date').value;
+            document.getElementById('p-view-date').innerText = `: ${rDate ? formatDateIndo(rDate) : '-'}`;
+            document.getElementById('p-view-period').innerText = `: ${document.getElementById('rep-period').value || '-'}`;
+            
+            // Weather parsing (basic display logic based on input)
+            const weatherVal = document.getElementById('rep-weather').value.toLowerCase();
+            document.getElementById('p-view-w-sunny').innerText = weatherVal.includes('cerah') ? document.getElementById('rep-weather').value : '.......... s/d ..........';
+            document.getElementById('p-view-w-cloudy').innerText = weatherVal.includes('berawan') ? document.getElementById('rep-weather').value : '.......... s/d ..........';
+            document.getElementById('p-view-w-rainy').innerText = weatherVal.includes('hujan') ? document.getElementById('rep-weather').value : '.......... s/d ..........';
 
-            // Compute manpower table rows automatically based on state
-            const tCivil = parseInt(document.getElementById('count-tukang').value || 0) + parseInt(document.getElementById('count-kuli').value || 0);
-            let manHTML = `
-                <tr>
-                    <td style="text-align: left; font-weight: bold;">Sipil (Civil Team)</td>
-                    <td style="text-align: left; font-size: 9pt;">${document.getElementById('rep-man-civil').value.replace(/\n/g, ', ')}</td>
-                    <td>${tCivil} Orang</td>
-                </tr>
-            `;
-            if(document.getElementById('rep-man-paint').value.trim()) {
-                manHTML += `
-                    <tr>
-                        <td style="text-align: left; font-weight: bold;">Finishing Cat (Painters)</td>
-                        <td style="text-align: left; font-size: 9pt;">${document.getElementById('rep-man-paint').value.replace(/\n/g, ', ')}</td>
-                        <td>${document.getElementById('count-paint').value || 0} Orang</td>
-                    </tr>
-                `;
-            }
-            manHTML += `
-                <tr>
-                    <td style="text-align: left; font-weight: bold;">Mekanikal / AC Team</td>
-                    <td style="text-align: left; font-size: 9pt; color:#666;">Alokasi Subkontraktor AC Lapangan</td>
-                    <td>${document.getElementById('count-ac').value || 0} Orang</td>
-                </tr>
-                <tr>
-                    <td style="text-align: left; font-weight: bold;">Elektrikal / Kelistrikan</td>
-                    <td style="text-align: left; font-size: 9pt; color:#666;">Alokasi Subkontraktor Kelistrikan</td>
-                    <td>${document.getElementById('count-elec').value || 0} Orang</td>
-                </tr>
-            `;
-            document.getElementById('p-view-manpower-table').innerHTML = manHTML;
+            // Manpower
+            document.getElementById('p-view-manpower').innerText = document.getElementById('rep-manpower').value || 'Sipil (Civil) : ....... orang\nSubcont : ....... orang';
 
-            // Build dynamic table lists for work description progress items
-            let itemsHTML = '';
-            let countIndex = 1;
+            // Notes
+            document.getElementById('p-view-notes').innerText = document.getElementById('rep-notes').value || '-';
 
-            if(document.getElementById('rep-villa13').value.trim()) {
-                const lines = document.getElementById('rep-villa13').value.split('\n');
-                let descHTML = '<ul style="margin: 0; padding-left: 15px; text-align:left;">';
-                lines.forEach(l => {
-                    if(l.trim()) {
-                        let finalLine = enableTranslation ? translateLine(l) : l.replace(/^\*\s*/, '');
-                        descHTML += `<li>${finalLine}</li>`;
-                    }
+            // Work Items
+            const items = document.getElementById('rep-work-items').value.split('\n').filter(i => i.trim() !== '');
+            let htmlItems = '';
+            if(items.length === 0) {
+                htmlItems = `<tr><td class="text-center">1</td><td>-</td><td>-</td></tr>`;
+            } else {
+                items.forEach((item, idx) => {
+                    let text = enableTranslation ? translateLine(item) : item.replace(/^\d+\.\s*/, '');
+                    htmlItems += `<tr><td class="text-center">${idx + 1}</td><td>${text}</td><td>Sesuai progress lapangan</td></tr>`;
                 });
-                descHTML += '</ul>';
-                itemsHTML += `
-                    <tr>
-                        <td style="text-align:center;">${countIndex++}</td>
-                        <td style="font-weight:bold;">Pekerjaan Villa 13 <br><span style="font-size:8pt; font-weight:normal; font-style:italic;">(Villa 13 Construction Progress Block)</span></td>
-                        <td>${descHTML}</td>
-                    </tr>
-                `;
             }
+            document.getElementById('p-view-work-items').innerHTML = htmlItems;
 
-            if(document.getElementById('rep-villa15').value.trim()) {
-                const lines = document.getElementById('rep-villa15').value.split('\n');
-                let descHTML = '<ul style="margin: 0; padding-left: 15px; text-align:left;">';
-                lines.forEach(l => {
-                    if(l.trim()) {
-                        let finalLine = enableTranslation ? translateLine(l) : l.replace(/^\*\s*/, '');
-                        descHTML += `<li>${finalLine}</li>`;
-                    }
-                });
-                descHTML += '</ul>';
-                itemsHTML += `
-                    <tr>
-                        <td style="text-align:center;">${countIndex++}</td>
-                        <td style="font-weight:bold;">Pekerjaan Villa 15 <br><span style="font-size:8pt; font-weight:normal; font-style:italic;">(Villa 15 Construction Progress Block)</span></td>
-                        <td>${descHTML}</td>
-                    </tr>
-                `;
+            // Tools & Materials Lists (1 to 10 max visual representation)
+            const tools = document.getElementById('rep-tools').value.split('\n').filter(i => i.trim() !== '');
+            const mats = document.getElementById('rep-materials').value.split('\n').filter(i => i.trim() !== '');
+            let hTools = '', hMats = '';
+            
+            for(let i=1; i<=10; i++) {
+                let t = tools[i-1] ? tools[i-1].replace(/^\d+\.\s*/, '') : '';
+                let m = mats[i-1] ? mats[i-1].replace(/^\d+\.\s*/, '') : '';
+                
+                hTools += `<tr><td class="text-center" style="width:10%;">${i}.</td><td style="width:90%;">${t}</td></tr>`;
+                hMats += `<tr><td class="text-center" style="width:10%;">${i}.</td><td style="width:90%;">${m}</td></tr>`;
             }
-            document.getElementById('p-view-work-items').innerHTML = itemsHTML;
+            
+            document.getElementById('p-view-tools-list').innerHTML = hTools;
+            document.getElementById('p-view-mats-list').innerHTML = hMats;
 
-            // Inject Equipment and Logistics Lists block layout elements
-            document.getElementById('p-view-tools').innerText = document.getElementById('rep-tools').value.split(',').map(x=>'• '+x.trim()).join('\n');
-            document.getElementById('p-view-materials').innerText = document.getElementById('rep-materials').value.split(',').map(x=>'• '+x.trim()).join('\n');
-
-            // Trigger system hardware browser print driver modal (save to PDF natively)
             window.print();
         }
 
-        // Feature 2: Save Purchase Order Record into persistent state storage engine (LocalStorage)
-        function savePurchaseOrder() {
-            const project = document.getElementById('po-project').value;
-            const date = document.getElementById('po-date').value;
-            const code = document.getElementById('po-code').value;
-            const title = document.getElementById('po-title').value;
-            const items = document.getElementById('po-items').value;
-
-            if(!code || !title) {
-                alert('Mohon lengkapi kode PO beserta detail deskripsi item pengadaan barang!');
-                return;
-            }
-
-            const newPO = { project, date, code, title, items, timestamp: new Date().getTime() };
-            let savedList = JSON.parse(localStorage.getItem('shanti_po_records') || '[]');
-            savedList.unshift(newPO); // Append to top of array index stack
-            localStorage.setItem('shanti_po_records', JSON.stringify(savedList));
-            
-            renderPORecordsList();
-            alert(`Berkas data transaksi ${code} sukses diarsipkan dalam penyimpanan lokal!`);
-        }
-
-        // Render reactive data records UI stream for purchase orders
-        function renderPORecordsList() {
-            const container = document.getElementById('po-logs-list');
-            let savedList = JSON.parse(localStorage.getItem('shanti_po_records') || '[]');
-            
-            if(savedList.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-6 text-xs text-slate-400 bg-slate-50 rounded-lg border border-dashed border-slate-200">
-                        Belum ada riwayat PO tersimpan hari ini.
-                    </div>`;
-                return;
-            }
-
-            container.innerHTML = savedList.map(po => `
-                <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs shadow-sm hover:border-indigo-300 transition-colors">
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="font-mono font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded">${po.code}</span>
-                        <span class="text-[10px] text-slate-400">${po.date}</span>
-                    </div>
-                    <p class="font-semibold text-slate-800 mb-1">${po.title}</p>
-                    <p class="text-[11px] text-slate-500 line-clamp-2">${po.items.replace(/\n/g, ', ')}</p>
-                </div>
-            `).join('');
-        }
-
-        // Feature 2: WhatsApp Procurement message text assembler 
+        // WhatsApp PO
         function generatePOWA() {
-            const project = document.getElementById('po-project').value;
-            const dateVal = document.getElementById('po-date').value;
-            const formattedDate = dateVal ? formatDateIndo(dateVal) : '12 Juli 2026';
-            const code = document.getElementById('po-code').value;
-            const title = document.getElementById('po-title').value;
-            const itemsRaw = document.getElementById('po-items').value.split('\n');
-
-            let text = `PURCHASE ORDER💸\n\n`;
-            text += `Proyek: ${project}\n`;
-            text += `Tanggal Kebutuhan: ${formattedDate}\n\n\n`;
-            text += `*${code}* ${title}\n\n`;
-
-            let idx = 1;
-            itemsRaw.forEach(item => {
-                if(item.trim()) {
-                    let parts = item.split('#');
-                    let name = parts[0] ? parts[0].trim() : '';
-                    let qty = parts[1] ? ' ' + parts[1].trim() : '';
-                    text += `${idx++}. ${name}${qty}\n`;
-                }
-            });
-
-            copyToClipboard(text);
-            const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
-            window.open(waUrl, '_blank');
+            const waNumber = '6281235728600';
+            const text = `PURCHASE ORDER\nProject: ${document.getElementById('po-project').value}\nCode: ${document.getElementById('po-code').value}\n\nItems:\n${document.getElementById('po-items').value}`;
+            window.open(`https://api.whatsapp.com/send?phone=${waNumber}&text=${encodeURIComponent(text)}`, '_blank');
         }
 
-        // Feature 3: Smart Geolocation sync system for Site Photo documentation 
+        // GPS & Documentation
         let globalCoordinates = null;
         function requestGPSLocation() {
             const statusLabel = document.getElementById('gps-status');
             if (navigator.geolocation) {
-                statusLabel.innerText = "Mencari koordinat satelit GPS...";
+                statusLabel.innerHTML = 'Mencari sinyal satelit...';
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
-                        globalCoordinates = {
-                            lat: position.coords.latitude.toFixed(5),
-                            lon: position.coords.longitude.toFixed(5)
-                        };
-                        statusLabel.innerHTML = `<span class="text-emerald-600 font-medium"><i class="fa-solid fa-circle-check"></i> GPS Terkunci: ${globalCoordinates.lat}, ${globalCoordinates.lon}</span>`;
-                        // Re-process photo watermark layer if image already loaded on canvas element
-                        const imgInput = document.getElementById('doc-file-input');
-                        if(imgInput.files && imgInput.files[0]) {
-                            redrawWatermarkCanvas();
-                        }
+                        globalCoordinates = { lat: position.coords.latitude.toFixed(5), lon: position.coords.longitude.toFixed(5) };
+                        statusLabel.innerHTML = `<span class="text-emerald-600 font-bold">Terhubung: ${globalCoordinates.lat}, ${globalCoordinates.lon}</span>`;
+                        if(sourceUploadedImageObject) redrawWatermarkCanvas();
                     },
-                    () => {
-                        statusLabel.innerHTML = `<span class="text-amber-600"><i class="fa-solid fa-triangle-exclamation"></i> Izin GPS ditolak. Menggunakan metadata default Bali.</span>`;
-                    }
+                    () => { statusLabel.innerHTML = `<span class="text-red-500">Izin GPS Ditolak / Gagal</span>`; }
                 );
-            } else {
-                statusLabel.innerText = "Browser perangkat anda tidak mendukung Geolocation API.";
             }
         }
 
-        // Feature 3: Core Graphic Canvas Watermark Stamper Engine
         let sourceUploadedImageObject = null;
         function processProjectPhoto(event) {
             const file = event.target.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function(e) {
                 sourceUploadedImageObject = new Image();
@@ -842,95 +560,52 @@ Suidi"></textarea>
 
         function redrawWatermarkCanvas() {
             if(!sourceUploadedImageObject) return;
-
             const canvas = document.getElementById('watermarkCanvas');
             const ctx = canvas.getContext('2d');
-
-            // Enforce resolution parameters to preserve industrial clarity quality
             canvas.width = sourceUploadedImageObject.naturalWidth || 1024;
             canvas.height = sourceUploadedImageObject.naturalHeight || 768;
 
-            // Draw base structural image layout layer
             ctx.drawImage(sourceUploadedImageObject, 0, 0, canvas.width, canvas.height);
 
-            // Create solid professional dark dark translucent HUD container at bottom edge area
             const overlayHeight = canvas.height * 0.16;
-            ctx.fillStyle = "rgba(15, 23, 42, 0.75)"; // Tailwind Slate 900 tint alpha
+            ctx.fillStyle = "rgba(15, 23, 42, 0.75)";
             ctx.fillRect(0, canvas.height - overlayHeight, canvas.width, overlayHeight);
 
-            // Inject Metadata typography properties
             const now = new Date();
             const timeStr = now.toTimeString().split(' ')[0];
             const dateStr = formatDateIndo(now.toISOString().split('T')[0]);
-            const locationText = document.getElementById('doc-location-name').value || "Shanti Villages Construction Site";
+            const locationText = document.getElementById('doc-location-name').value || "Proyek Construction Site";
             
-            let gpsStr = "GPS Coord: -8.79421, 115.12354 (Balangan Headland Default)";
-            if(globalCoordinates) {
-                gpsStr = `GPS Coord: ${globalCoordinates.lat}, ${globalCoordinates.lon}`;
-            }
+            let gpsStr = "GPS: Koordinat Tidak Diketahui";
+            if(globalCoordinates) gpsStr = `GPS Coord: ${globalCoordinates.lat}, ${globalCoordinates.lon}`;
 
             const fontSize = Math.max(14, Math.floor(canvas.height * 0.025));
-            ctx.font = `bold ${fontSize}px 'Arial', sans-serif`;
+            ctx.font = `bold ${fontSize}px 'Arial'`;
             
-            // Text Color Accent setup
-            ctx.fillStyle = "#fbbf24"; // Amber gold highlight text accent color
-            ctx.fillText(`PROGESS DOKUMEN: ${locationText.toUpperCase()}`, 25, canvas.height - overlayHeight + (fontSize * 1.4));
+            ctx.fillStyle = "#fbbf24";
+            ctx.fillText(`LOKASI: ${locationText.toUpperCase()}`, 25, canvas.height - overlayHeight + (fontSize * 1.4));
 
             ctx.fillStyle = "#ffffff";
-            ctx.font = `${fontSize * 0.85}px 'Arial', sans-serif`;
-            ctx.fillText(`Waktu Pengambilan : ${dateStr} | Jam ${timeStr} WITA`, 25, canvas.height - overlayHeight + (fontSize * 2.8));
-            ctx.fillText(`Sistem Validasi    : ${gpsStr} | Verified Static Upload`, 25, canvas.height - overlayHeight + (fontSize * 4.0));
-
-            // Generate optimized Google Drive standard management clean filename string mapping
-            const cleanLoc = locationText.replace(/[^a-zA-Z0-9]/g, '_');
-            const fileStamp = now.getFullYear() + 
-                              String(now.getMonth()+1).padStart(2,'0') + 
-                              String(now.getDate()).padStart(2,'0') + "_" + 
-                              timeStr.replace(/:/g,'');
-            const targetFilename = `${fileStamp}_SHANTI_${cleanLoc.toUpperCase()}.jpg`;
-            
-            document.getElementById('generated-filename-label').innerText = `Filename: ${targetFilename}`;
-            document.getElementById('generated-filename-label').dataset.filename = targetFilename;
+            ctx.font = `${fontSize * 0.85}px 'Arial'`;
+            ctx.fillText(`Waktu  : ${dateStr} | Jam ${timeStr}`, 25, canvas.height - overlayHeight + (fontSize * 2.8));
+            ctx.fillText(`Sistem : ${gpsStr}`, 25, canvas.height - overlayHeight + (fontSize * 4.0));
         }
 
-        // Trigger safe storage binary download payload stream
         function downloadStampedPhoto() {
             const canvas = document.getElementById('watermarkCanvas');
-            const filename = document.getElementById('generated-filename-label').dataset.filename || 'DOKUMEN_PROYEK.jpg';
-            
             const link = document.createElement('a');
-            link.download = filename;
+            link.download = `Dokumentasi_${new Date().getTime()}.jpg`;
             link.href = canvas.toDataURL('image/jpeg', 0.9);
             link.click();
         }
 
-        // GENERAL REUSABLE CONTEXT HELPERS
         function formatDateIndo(dateString) {
             if(!dateString) return '';
-            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
             const parts = dateString.split('-');
             if(parts.length !== 3) return dateString;
             return `${parseInt(parts[2])} ${months[parseInt(parts[1]) - 1]} ${parts[0]}`;
         }
-
-        function copyToClipboard(text) {
-            const dummy = document.createElement("textarea");
-            document.body.appendChild(dummy);
-            dummy.value = text;
-            dummy.select();
-            document.execCommand("copy");
-            document.body.removeChild(dummy);
-        }
-
-        // Trigger dynamic state load initialization lifecycle on boot window event bind
-        window.onload = function() {
-            renderPORecordsList();
-            
-            // Sync form title dynamically if user inputs custom naming patterns inside blocks
-            document.getElementById('doc-location-name').addEventListener('input', () => {
-                if(sourceUploadedImageObject) redrawWatermarkCanvas();
-            });
-        };
     </script>
 </body>
 </html>
