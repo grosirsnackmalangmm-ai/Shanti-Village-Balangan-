@@ -161,7 +161,7 @@
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Tanggal Update</label>
-                            <input type="date" id="rep-date" value="2026-07-11" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500">
+                            <input type="date" id="rep-date" value="2026-07-12" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Kondisi Cuaca</label>
@@ -399,7 +399,7 @@ Suidi"></textarea>
                 <td style="width: 18%; font-weight: bold; background-color: #f9f9f9;">NAMA PROYEK<br><span style="font-size: 8pt; font-weight: normal; font-style: italic;">(Project Name)</span></td>
                 <td style="width: 32%;" id="p-view-project">Shanti Villages-Balangan</td>
                 <td style="width: 18%; font-weight: bold; background-color: #f9f9f9;">TANGGAL<br><span style="font-size: 8pt; font-weight: normal; font-style: italic;">(Date)</span></td>
-                <td style="width: 32%;" id="p-view-date">11 Juli 2026</td>
+                <td style="width: 32%;" id="p-view-date">12 Juli 2026</td>
             </tr>
             <tr>
                 <td style="font-weight: bold; background-color: #f9f9f9;">ALAMAT PROYEK<br><span style="font-size: 8pt; font-weight: normal; font-style: italic;">(Project Address)</span></td>
@@ -555,7 +555,7 @@ Suidi"></textarea>
 
             document.getElementById('rep-tools').value = "jack hammer, rotary drill incco (*urgent perlu tambahan*), bor kecil kabel, bor baterai, gerinda, mesin las, Cangkul, sekop, arco, waterpass mistar, scaffolding, vibrator, waterpass laser, gunting pipa, Ducting kit, Gunting baja, waterpass selang, elemen heater PPR kit (perlu repair )";
             
-            // PERBAIKAN: Menggunakan backtick (`) agar penggunaan tanda kutip ganda pada string tidak rusak
+            // Menggunakan backtick (`) agar penggunaan tanda kutip ganda pada string tidak rusak
             document.getElementById('rep-materials').value = `pasir, Semen, clamp pipa, kabel ties, resibon, Panel ducting, lem kuning, cutter, pipa PPR ½", pipa PPR ¾", fiting pipa PPR, pipa PVC AW 4", pipa PVC AW 3", pipa PVC AW 1-½", fiting pipa PVC, lem pipa PVC, Dynaset M6,8,10, longdrat M6,8,10, Inbowdoos Schneider, panel MDP, MCB kit.`;
             
             alert('Contoh data laporan harian berhasil disuntikkan ke dalam form!');
@@ -565,7 +565,7 @@ Suidi"></textarea>
         function generateReportWA() {
             const project = document.getElementById('rep-project').value;
             const dateVal = document.getElementById('rep-date').value;
-            const formattedDate = dateVal ? formatDateIndo(dateVal) : '11 Juli 2026';
+            const formattedDate = dateVal ? formatDateIndo(dateVal) : '12 Juli 2026';
             
             let text = `PROJECT'S UPDATE 🌟\nLaporan Harian _daily report_ 📒\n\n`;
             text += `Project : ${project}\n`;
@@ -630,7 +630,7 @@ Suidi"></textarea>
             // Update Text Node Metadata Fields inside layout block
             document.getElementById('p-view-project').innerText = document.getElementById('rep-project').value;
             const rawDate = document.getElementById('rep-date').value;
-            document.getElementById('p-view-date').innerText = rawDate ? formatDateIndo(rawDate) : '11 Juli 2026';
+            document.getElementById('p-view-date').innerText = rawDate ? formatDateIndo(rawDate) : '12 Juli 2026';
             document.getElementById('p-view-weather').innerText = document.getElementById('rep-weather').value;
 
             // Compute manpower table rows automatically based on state
