@@ -1,273 +1,175 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from 'react';
+import html2pdf from 'html2pdf.js';
 
-export default function LaporanHarian() {
-  // State untuk data dinamis form
+export default function DailyReportPage() {
+  const reportRef = useRef();
+  
+  // State untuk menyimpan data input
   const [formData, setFormData] = useState({
-    namaProyek: "Shanti Village Balangan",
-    alamatProyek: "JL Pantai Balangan",
-    tanggal: "2026-07-11",
-    periode: "",
-    pekerjaSipil: "6",
-    pekerjaAC: "3",
-    pekerjaElectric: "2",
-    pekerjaPainting: "3",
-    cuacaCerah: "",
-    cuacaBerawan: "",
-    cuacaHujan: "",
-    catatanPosisi: "PM/ SM/ SE/ Site Spv",
-    catatanNotes: "", // Opsional
-    peralatan: "1. Jack hammer, INGCO drill\n2. Electric hand drill\n3. Cordless drill",
-    material: "1. Sand, cement\n2. Pipe clamps\n3. Cable ties, resibon",
+    project: 'Shanti Villages-Balangan',
+    date: '11 Juli 2026',
+    workers: { civil: 6, ac: 3, electric: 2, paint: 3 },
+    villa13: [
+      'instalasi air bersih area barberque',
+      'instalasi pipa air kotor area barberque',
+      'instalasi air hujan area decking dan living outdoor'
+    ],
+    villa15: [
+      'pekejaan bowplank sikuan kolam renang',
+      'pekerjaan marking tangga kolam renang'
+    ],
+    equipment: 'jack hammer, rotary drill incco, bor baterai',
+    material: 'pasir, Semen, clamp pipa, kabel ties'
   });
 
-  // State untuk list pekerjaan dinamis
-  const [pekerjaanList, setPekerjaanList] = useState([
-    { no: "1", item: "Installation of clean water piping in barbecue area", remark: "Villa 13" },
-    { no: "2", item: "Installation of waste water piping in barbecue area", remark: "Villa 13" },
-    { no: "3", item: "Electrical installation, including setting the position of switches", remark: "Villa 13" },
-  ]);
+  // Fungsi Copy ke WhatsApp
+  const copyToWA = () => {
+    const waText = `PROJECT'S UPDATE 🌟
+Laporan Harian _daily report_ 📒
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+Project  : ${formData.project} 
+List Update  : ${formData.date} 
+
+1. Update pekerjaan hari ini:
+Pekerjaan villa 13 :
+${formData.villa13.map(item => `* ${item}`).join('\n')}
+
+Pekerjaan villa 15 :
+${formData.villa15.map(item => `* ${item}`).join('\n')}
+
+Total Tenaga Kerja Sipil: ${formData.workers.civil} orang
+Team AC: ${formData.workers.ac} orang
+Team listrik: ${formData.workers.electric} orang
+Team Cat: ${formData.workers.paint} orang
+
+Alat kerja :
+${formData.equipment}
+
+Material : 
+${formData.material}`;
+
+    navigator.clipboard.writeText(waText);
+    alert("Format WA berhasil disalin! Silakan paste di WhatsApp.");
   };
 
-  const handlePekerjaanChange = (index, field, value) => {
-    const updated = [...pekerjaanList];
-    updated[index][field] = value;
-    setPekerjaanList(updated);
-  };
+  // Fungsi Download PDF
+  const downloadPDF = (lang) => {
+    const element = reportRef.current;
+    
+    // Konfigurasi PDF agar persis seperti form A4
+    const opt = {
+      margin:       10,
+      filename:     `Laporan_Harian_${lang}_${formData.date}.pdf`,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2 },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
 
-  const tambahBarisPekerjaan = () => {
-    setPekerjaanList([...pekerjaanList, { no: String(pekerjaanList.length + 1), item: "", remark: "" }]);
-  };
-
-  const handlePrint = () => {
-    window.print();
+    // Saat download, kita tampilkan dulu div-nya secara sementara
+    element.style.display = 'block';
+    html2pdf().set(opt).from(element).save().then(() => {
+        element.style.display = 'none'; // Sembunyikan lagi setelah selesai
+    });
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-2 sm:p-8 font-sans">
+    <div className="max-w-4xl mx-auto p-4 space-y-6 bg-gray-50 min-h-screen">
+      <h1 className="text-2xl font-bold text-gray-800">Form Laporan Harian</h1>
       
-      {/* ================= FORM INPUT (SEMBUNYI SAAT DICETAK) ================= */}
-      <div className="print:hidden max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md mb-8">
-        <h2 className="text-xl font-bold mb-4 text-gray-800 border-b pb-2">Input Data Laporan Harian</h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Nama Proyek</label>
-            <input type="text" name="namaProyek" value={formData.namaProyek} onChange={handleInputChange} className="mt-1 w-full p-2 border rounded" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Alamat Proyek</label>
-            <input type="text" name="alamatProyek" value={formData.alamatProyek} onChange={handleInputChange} className="mt-1 w-full p-2 border rounded" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Tanggal</label>
-            <input type="date" name="tanggal" value={formData.tanggal} onChange={handleInputChange} className="mt-1 w-full p-2 border rounded" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Periode</label>
-            <input type="text" name="periode" value={formData.periode} onChange={handleInputChange} className="mt-1 w-full p-2 border rounded" placeholder="Contoh: Minggu ke-2" />
-          </div>
+      {/* Container Input Form */}
+      <div className="bg-white p-6 rounded-lg shadow-md space-y-4">
+        <div>
+          <label className="block text-sm font-medium">Nama Proyek</label>
+          <input type="text" className="w-full border p-2 rounded" 
+                 value={formData.project} onChange={e => setFormData({...formData, project: e.target.value})} />
         </div>
+        {/* Tambahkan input form lain untuk equipment, material, dll disini */}
+      </div>
 
-        <h3 className="font-bold text-gray-700 mt-6 mb-2">Catatan Lapangan (Optional)</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Posisi Personil</label>
-            <input type="text" name="catatanPosisi" value={formData.catatanPosisi} onChange={handleInputChange} className="mt-1 w-full p-2 border rounded" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Catatan Tambahan (Boleh Kosong)</label>
-            <textarea name="catatanNotes" value={formData.catatanNotes} onChange={handleInputChange} className="mt-1 w-full p-2 border rounded h-10" placeholder="Ketik catatan di sini atau biarkan kosong..."></textarea>
-          </div>
-        </div>
-
-        <h3 className="font-bold text-gray-700 mt-6 mb-2">Item Pekerjaan</h3>
-        {pekerjaanList.map((item, idx) => (
-          <div key={idx} className="flex gap-2 mb-2">
-            <input type="text" className="w-12 p-2 border rounded text-center" value={item.no} readOnly />
-            <input type="text" className="flex-1 p-2 border rounded" value={item.item} placeholder="Nama Pekerjaan (English/Indo)" onChange={(e) => handlePekerjaanChange(idx, "item", e.target.value)} />
-            <input type="text" className="w-32 p-2 border rounded" value={item.remark} placeholder="Keterangan" onChange={(e) => handlePekerjaanChange(idx, "remark", e.target.value)} />
-          </div>
-        ))}
-        <button onClick={tambahBarisPekerjaan} className="mt-2 text-sm bg-gray-200 hover:bg-gray-300 text-gray-800 px-3 py-1 rounded">
-          + Tambah Baris Pekerjaan
+      {/* 3 Tombol Aksi Sesuai Permintaan */}
+      <div className="flex flex-col sm:flex-row gap-4">
+        <button onClick={copyToWA} className="flex-1 bg-green-500 text-white py-3 rounded-lg font-bold shadow hover:bg-green-600">
+          Copy Format WA
         </button>
-
-        <div className="mt-8 border-t pt-4 text-center">
-          <button onClick={handlePrint} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg w-full sm:w-auto">
-            🖨️ Cetak / Simpan ke PDF Resmi
-          </button>
-        </div>
+        <button onClick={() => downloadPDF('ID')} className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-bold shadow hover:bg-blue-700">
+          Download PDF (Indo)
+        </button>
+        <button onClick={() => downloadPDF('EN')} className="flex-1 bg-indigo-600 text-white py-3 rounded-lg font-bold shadow hover:bg-indigo-700">
+          Download PDF (English)
+        </button>
       </div>
 
-
-      {/* ================= FORMAT DOKUMEN FISIK (PERSIS GAMBAR) ================= */}
-      <div className="max-w-[810px] mx-auto bg-white p-6 border border-black shadow-lg text-[11px] text-black leading-tight bg-cover print:shadow-none print:border-none print:p-0">
-        
-        {/* TOP HEADER BLOCK */}
-        <div className="flex border border-black mb-1">
-          <div className="w-1/3 p-2 border-r border-black flex flex-col justify-center items-center">
-            <span className="text-xl font-black tracking-widest">ASA</span>
-            <span className="text-[8px] tracking-wider text-gray-500 font-bold">PRESTIGE VISION</span>
-          </div>
-          <div className="w-2/3 grid grid-cols-2 text-[9px]">
-            <div className="border-b border-r border-black p-1 font-bold">KODE DOKUMEN</div>
-            <div className="border-b border-black p-1">: FR/PRJ/004</div>
-            <div className="border-b border-r border-black p-1 font-bold">MULAI BERLAKU</div>
-            <div className="border-b border-black p-1">: 2025</div>
-            <div className="border-b border-r border-black p-1 font-bold">REVISI</div>
-            <div className="border-b border-black p-1">: 00</div>
-            <div className="border-r border-black p-1 font-bold">TANGGAL REVISI</div>
-            <div className="p-1">: -</div>
-          </div>
-        </div>
-
-        {/* TITLE BANNER */}
-        <div className="text-center font-bold my-3">
-          <div className="text-sm tracking-wide">LAPORAN HARIAN</div>
-          <div className="italic text-gray-600 font-normal">(Daily Report)</div>
-        </div>
-
-        {/* PROJECT META DATA */}
-        <div className="grid grid-cols-2 gap-x-4 mb-2 font-bold">
-          <div className="grid grid-cols-3">
-            <div className="col-span-1">NAMA PROYEK<br/><span className="text-[9px] font-normal italic text-gray-600">(Project Name)</span></div>
-            <div className="col-span-2">: {formData.namaProyek}</div>
-            <div className="col-span-1 mt-1">TANGGAL<br/><span className="text-[9px] font-normal italic text-gray-600">(Date)</span></div>
-            <div className="col-span-2 mt-1">: {formData.tanggal}</div>
-          </div>
-          <div className="grid grid-cols-3">
-            <div className="col-span-1">ALAMAT PROYEK<br/><span className="text-[9px] font-normal italic text-gray-600">(Project Address)</span></div>
-            <div className="col-span-2">: {formData.alamatProyek}</div>
-            <div className="col-span-1 mt-1">PERIODE<br/><span className="text-[9px] font-normal italic text-gray-600">(Period)</span></div>
-            <div className="col-span-2 mt-1">: {formData.periode || "-"}</div>
-          </div>
-        </div>
-
-        {/* 3-COLUMN BLOCK (WORKMAN, WEATHER, NOTES)[cite: 1] */}
-        <div className="grid grid-cols-3 border border-black mb-2 divide-x divide-black">
+      {/* --- TEMPLATE PDF TERSEMBUNYI (Hidden Template) --- 
+          Ini adalah layout HTML yang meniru gambar form fisik. 
+          Hanya dirender oleh html2pdf saat tombol download ditekan */}
+      <div style={{ display: 'none' }}>
+        <div ref={reportRef} style={{ padding: '20px', fontFamily: 'Arial, sans-serif', color: 'black' }}>
           
-          {/* Col 1: Jumlah Pekerja[cite: 1] */}
-          <div className="p-1">
-            <div className="font-bold border-b border-black pb-1 mb-1">JUMLAH PEKERJA <span className="font-normal italic text-gray-600">(Number of Workman)</span>:</div>
-            <div className="grid grid-cols-2 gap-y-1">
-              <div>Sipil <span className="italic text-gray-500">(Civil)</span></div><div>: {formData.pekerjaSipil} orang</div>
-              <div>Subcont <span className="font-bold">AC</span></div><div>: {formData.pekerjaAC} orang</div>
-              <div>Subcont <span className="font-bold">Electric</span></div><div>: {formData.pekerjaElectric} orang</div>
-              <div>Subcont <span className="font-bold">Painting</span></div><div>: {formData.pekerjaPainting} orang</div>
-              <div>Subcont ........</div><div>: ...... orang</div>
-            </div>
+          {/* Header Dokumen */}
+          <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
+            <tbody>
+              <tr>
+                <td rowSpan="4" style={{ width: '30%', border: '1px solid black', padding: '10px' }}>
+                  <h1 style={{ margin: 0, fontSize: '24px' }}>ASA</h1>
+                  <span style={{ fontSize: '12px' }}>PRESTIGE VISION</span>
+                </td>
+                <td style={{ border: '1px solid black', padding: '5px' }}>KODE DOKUMEN</td>
+                <td style={{ border: '1px solid black', padding: '5px' }}>: FR/PRJ/004</td>
+              </tr>
+              <tr>
+                <td style={{ border: '1px solid black', padding: '5px' }}>MULAI BERLAKU</td>
+                <td style={{ border: '1px solid black', padding: '5px' }}>: 2025</td>
+              </tr>
+              {/* Baris lain disesuaikan layout... */}
+            </tbody>
+          </table>
+
+          {/* Judul Laporan */}
+          <div style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '18px', marginBottom: '20px', backgroundColor: '#e5e7eb', padding: '5px', border: '1px solid black' }}>
+            LAPORAN HARIAN (Daily Report)
           </div>
 
-          {/* Col 2: Kondisi Cuaca[cite: 1] */}
-          <div className="p-0 flex flex-col">
-            <div className="font-bold p-1 border-b border-black">Kondisi Cuaca & Kondisi Khusus :<br/><span className="font-normal italic text-gray-600">(Weather Condition & Special Condition) :</span></div>
-            <table className="w-full text-center text-[10px] flex-1">
-              <thead>
-                <tr className="border-b border-black font-bold">
-                  <th className="border-r border-black w-1/2 p-1">Kondisi <span className="font-normal italic text-gray-500">(Condition)</span></th>
-                  <th className="p-1">Durasi/ Waktu <span className="font-normal italic text-gray-500">(Duration/ Time)</span></th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-black">
-                <tr><td className="border-r border-black p-1 text-left">Cerah <span className="text-gray-500 italic">(Sunny)</span></td><td className="p-1">{formData.cuacaCerah || "........ s/d ........"}</td></tr>
-                <tr><td className="border-r border-black p-1 text-left">Berawan <span className="text-gray-500 italic">(Cloudy)</span></td><td className="p-1">{formData.cuacaBerawan || "........ s/d ........"}</td></tr>
-                <tr><td className="border-r border-black p-1 text-left">Hujan <span className="text-gray-500 italic">(Rainy)</span></td><td className="p-1">{formData.cuacaHujan || "........ s/d ........"}</td></tr>
-              </tbody>
-            </table>
-          </div>
-
-          {/* Col 3: Catatan Tim Lapangan (OPTIONAL FIELD)[cite: 1] */}
-          <div className="p-1">
-            <div className="font-bold border-b border-black pb-1 mb-1">Catatan Tim Lapangan yang Bertugas :<br/><span className="font-normal italic text-gray-600">(Notes from Employer's Representative) :</span></div>
-            <div className="mb-1"><span className="font-bold">Posisi <span className="font-normal italic text-gray-500">(Position)</span></span> : {formData.catatanPosisi}</div>
+          {/* Info Proyek */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
             <div>
-              <span className="font-bold">Catatan <span className="font-normal italic text-gray-500">(Notes)</span></span> : 
-              <p className="mt-1 text-gray-700 italic font-mono whitespace-pre-wrap">
-                {formData.catatanNotes || "-"}
-              </p>
+               <p><strong>NAMA PROYEK :</strong> {formData.project}</p>
+               <p><strong>TANGGAL :</strong> {formData.date}</p>
+            </div>
+            <div>
+               <p><strong>ALAMAT PROYEK :</strong> Jl Pantai Balangan</p>
             </div>
           </div>
-        </div>
 
-        {/* MAIN WORK ITEMS TABLE[cite: 1] */}
-        <table className="w-full border border-black border-collapse mb-2 text-left">
-          <thead>
-            <tr className="border-b border-black bg-gray-50 font-bold text-center">
-              <th className="border-r border-black w-8 p-1">No<br/><span className="font-normal text-[9px] italic text-gray-500">No</span></th>
-              <th className="border-r border-black p-1">Item Pekerjaan<br/><span className="font-normal text-[9px] italic text-gray-500">Item of Work</span></th>
-              <th className="w-40 p-1">Keterangan<br/><span className="font-normal text-[9px] italic text-gray-500">Remark</span></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-black font-mono">
-            {pekerjaanList.map((item, idx) => (
-              <tr key={idx}>
-                <td className="border-r border-black p-1.5 text-center">{item.no}</td>
-                <td className="border-r border-black p-1.5 px-3">{item.item || "-"}</td>
-                <td className="p-1.5 px-2 text-center text-gray-600">{item.remark || "-"}</td>
+          {/* Tabel Pekerjaan */}
+          <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid black' }}>
+            <thead>
+              <tr style={{ backgroundColor: '#f3f4f6' }}>
+                <th style={{ border: '1px solid black', padding: '8px' }}>No</th>
+                <th style={{ border: '1px solid black', padding: '8px' }}>Item Pekerjaan (Item of Work)</th>
               </tr>
-            ))}
-            {/* Baris kosong pelengkap agar presisi tinggi jika item sedikit[cite: 1] */}
-            {pekerjaanList.length < 6 && [...Array(6 - pekerjaanList.length)].map((_, i) => (
-              <tr key={i} className="h-6">
-                <td className="border-r border-black p-1.5"></td>
-                <td className="border-r border-black p-1.5"></td>
-                <td className="p-1.5"></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              <tr><td colSpan="2" style={{ border: '1px solid black', padding: '5px', fontWeight: 'bold' }}>Villa 13</td></tr>
+              {formData.villa13.map((item, idx) => (
+                <tr key={idx}>
+                  <td style={{ border: '1px solid black', padding: '5px', textAlign: 'center' }}>{idx + 1}</td>
+                  <td style={{ border: '1px solid black', padding: '5px' }}>{item}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
 
-        {/* BOTTOM TWIN COLUMNS (EQUIPMENT & MATERIAL)[cite: 1] */}
-        <div className="grid grid-cols-2 border border-black divide-x divide-black mb-4">
-          <div className="p-2">
-            <div className="font-bold text-center border-b border-black pb-1 mb-2">Peralatan Kerja<br/><span className="font-normal italic text-gray-500">(Item of Equipment)</span></div>
-            <div className="font-mono whitespace-pre-wrap pl-2">{formData.peralatan}</div>
-          </div>
-          <div className="p-2">
-            <div className="font-bold text-center border-b border-black pb-1 mb-2">Material<br/><span className="font-normal italic text-gray-500">(Item of Material)</span></div>
-            <div className="font-mono grid grid-cols-1 gap-1 whitespace-pre-wrap pl-2">{formData.material}</div>
+          {/* Tanda Tangan */}
+          <div style={{ display: 'flex', marginTop: '40px', justifyContent: 'space-between' }}>
+             <div style={{ border: '1px solid black', width: '30%', height: '100px', padding: '10px', textAlign: 'center', position: 'relative' }}>
+                <p style={{ fontSize: '12px' }}>Dibuat oleh (Site Spv)</p>
+                <div style={{ position: 'absolute', bottom: '10px', width: '100%' }}>Tanggal: .............</div>
+             </div>
+             {/* Kotak tanda tangan lainnya */}
           </div>
         </div>
-
-        {/* SIGNATURES BLOCK[cite: 1] */}
-        <div className="grid grid-cols-3 text-center font-bold text-[10px] mt-6">
-          <div className="flex flex-col justify-between h-24">
-            <div>Dibuat oleh,<br/><span className="font-normal italic text-gray-500">(Proposed by),</span></div>
-            <div className="mx-auto w-3/4 border-b border-black border-dashed mt-8"></div>
-            <div className="text-[9px]">Site Engineer/ Site Spv<br/><span className="font-normal text-[8px]">Tanggal (Date) : ____/____/_____</span></div>
-          </div>
-          <div className="flex flex-col justify-between h-24 border-x border-black border-dashed px-1">
-            <div>Diketahui oleh,<br/><span className="font-normal italic text-gray-500">(Known by),</span></div>
-            <div className="mx-auto w-3/4 border-b border-black border-dashed mt-8"></div>
-            <div className="text-[9px]">Project Manager/ Site Manager<br/><span className="font-normal text-[8px]">Tanggal (Date) : ____/____/_____</span></div>
-          </div>
-          <div className="flex flex-col justify-between h-24">
-            <div>Diterima oleh,<br/><span className="font-normal italic text-gray-500">(Received by),</span></div>
-            <div className="mx-auto w-3/4 border-b border-black border-dashed mt-8"></div>
-            <div className="text-[9px]">Owner/ Consultant<br/><span className="font-normal text-[8px]">Tanggal (Date) : ____/____/_____</span></div>
-          </div>
-        </div>
-
       </div>
-
-      {/* STYLING KHUSUS PRINT SUPAYA PAS DI KERTAS A4 */}
-      <style jsx global>{`
-        @media print {
-          body {
-            background-color: transparent;
-            padding: 0;
-          }
-          .print\\:hidden {
-            display: none !important;
-          }
-        }
-      `}</style>
-
     </div>
   );
 }
