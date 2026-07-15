@@ -4,170 +4,232 @@ import html2pdf from 'html2pdf.js';
 
 export default function DailyReportPage() {
   const reportRef = useRef();
-  
-  // State untuk menyimpan data input
+
   const [formData, setFormData] = useState({
-    project: 'Shanti Villages-Balangan',
+    project: 'Shanti Villages - Balangan',
+    address: 'Jl. Pantai Balangan',
     date: '11 Juli 2026',
     workers: { civil: 6, ac: 3, electric: 2, paint: 3 },
     villa13: [
-      'instalasi air bersih area barberque',
-      'instalasi pipa air kotor area barberque',
-      'instalasi air hujan area decking dan living outdoor'
+      'Instalasi air bersih area barberque',
+      'Instalasi pipa air kotor area barberque',
+      'Instalasi air hujan area decking dan living outdoor',
+      'Instalasi elektrikal setting posisi saklar dan outlet',
+      'Instalasi panel MCB',
+      'Tes comisioning',
+      'Pekerjaan tangga shower outdoor',
+      'Pekerjaan finishing lis U skirting'
     ],
     villa15: [
-      'pekejaan bowplank sikuan kolam renang',
-      'pekerjaan marking tangga kolam renang'
+      'Pekerjaan bowplank sikuan kolam renang',
+      'Pekerjaan marking tangga kolam renang',
+      'Finishing repair acian dinding',
+      'Finishing gosok acian dinding'
     ],
-    equipment: 'jack hammer, rotary drill incco, bor baterai',
-    material: 'pasir, Semen, clamp pipa, kabel ties'
+    // Dibuat menyamping dengan koma
+    equipment: '1. Jack hammer, 2. Rotary drill incco (urgent perlu tambahan), 3. Bor kecil kabel, 4. Bor baterai, 5. Gerinda, 6. Mesin las, 7. Cangkul, 8. Sekop, 9. Arco, 10. Waterpass mistar, 11. Scaffolding, 12. Vibrator, 13. Waterpass laser, 14. Gunting pipa, 15. Ducting kit, 16. Gunting baja, 17. Waterpass selang, 18. Elemen heater PPR kit.',
+    materials: '1. Pasir, Semen, 2. Clamp pipa, kabel ties, resibon, Panel ducting, lem kuning, 3. Cutter, pipa PPR ½", pipa PPR ¾", fiting pipa PPR, 4. Pipa PVC AW 4", pipa PVC AW 3", pipa PVC AW 1-½", fiting pipa PVC, lem pipa PVC, 5. Dynaset M6,8,10, longdrat M6,8,10, 6. Inbowdoos Schneider, panel MDP, MCB kit.'
   });
 
-  // Fungsi Copy ke WhatsApp
-  const copyToWA = () => {
-    const waText = `PROJECT'S UPDATE 🌟
-Laporan Harian _daily report_ 📒
-
-Project  : ${formData.project} 
-List Update  : ${formData.date} 
-
-1. Update pekerjaan hari ini:
-Pekerjaan villa 13 :
-${formData.villa13.map(item => `* ${item}`).join('\n')}
-
-Pekerjaan villa 15 :
-${formData.villa15.map(item => `* ${item}`).join('\n')}
-
-Total Tenaga Kerja Sipil: ${formData.workers.civil} orang
-Team AC: ${formData.workers.ac} orang
-Team listrik: ${formData.workers.electric} orang
-Team Cat: ${formData.workers.paint} orang
-
-Alat kerja :
-${formData.equipment}
-
-Material : 
-${formData.material}`;
-
-    navigator.clipboard.writeText(waText);
-    alert("Format WA berhasil disalin! Silakan paste di WhatsApp.");
-  };
-
-  // Fungsi Download PDF
-  const downloadPDF = (lang) => {
+  const downloadPDF = () => {
     const element = reportRef.current;
     
-    // Konfigurasi PDF agar persis seperti form A4
+    // Konfigurasi ketat agar muat 1 halaman
     const opt = {
-      margin:       10,
-      filename:     `Laporan_Harian_${lang}_${formData.date}.pdf`,
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2 },
+      margin:       8, // Margin diperkecil
+      filename:     `Laporan_Harian_${formData.date}.pdf`,
+      image:        { type: 'jpeg', quality: 1 },
+      html2canvas:  { scale: 2, useCORS: true },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
-    // Saat download, kita tampilkan dulu div-nya secara sementara
     element.style.display = 'block';
     html2pdf().set(opt).from(element).save().then(() => {
-        element.style.display = 'none'; // Sembunyikan lagi setelah selesai
+        element.style.display = 'none'; 
     });
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 space-y-6 bg-gray-50 min-h-screen">
-      <h1 className="text-2xl font-bold text-gray-800">Form Laporan Harian</h1>
+    <div className="max-w-4xl mx-auto p-4 bg-gray-50 min-h-screen">
+      <h1 className="text-2xl font-bold mb-4">Daily Report Admin</h1>
       
-      {/* Container Input Form */}
-      <div className="bg-white p-6 rounded-lg shadow-md space-y-4">
-        <div>
-          <label className="block text-sm font-medium">Nama Proyek</label>
-          <input type="text" className="w-full border p-2 rounded" 
-                 value={formData.project} onChange={e => setFormData({...formData, project: e.target.value})} />
-        </div>
-        {/* Tambahkan input form lain untuk equipment, material, dll disini */}
-      </div>
-
-      {/* 3 Tombol Aksi Sesuai Permintaan */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <button onClick={copyToWA} className="flex-1 bg-green-500 text-white py-3 rounded-lg font-bold shadow hover:bg-green-600">
-          Copy Format WA
-        </button>
-        <button onClick={() => downloadPDF('ID')} className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-bold shadow hover:bg-blue-700">
-          Download PDF (Indo)
-        </button>
-        <button onClick={() => downloadPDF('EN')} className="flex-1 bg-indigo-600 text-white py-3 rounded-lg font-bold shadow hover:bg-indigo-700">
-          Download PDF (English)
+      {/* UI Form Sederhana */}
+      <div className="bg-white p-6 shadow rounded mb-4">
+        <p className="text-gray-600 mb-4">Isi form di sini (Di-mockup sesuai state default). Langsung test export untuk melihat hasil PDF yang sudah di-adjust 1 halaman.</p>
+        <button onClick={downloadPDF} className="bg-blue-600 text-white px-6 py-2 rounded font-bold hover:bg-blue-700 w-full">
+          Cetak PDF (1 Halaman)
         </button>
       </div>
 
-      {/* --- TEMPLATE PDF TERSEMBUNYI (Hidden Template) --- 
-          Ini adalah layout HTML yang meniru gambar form fisik. 
-          Hanya dirender oleh html2pdf saat tombol download ditekan */}
+      {/* --- TEMPLATE PDF TERSEMBUNYI --- */}
+      {/* Semua style dikompres untuk fit di kertas A4 tanpa break page */}
       <div style={{ display: 'none' }}>
-        <div ref={reportRef} style={{ padding: '20px', fontFamily: 'Arial, sans-serif', color: 'black' }}>
+        <div ref={reportRef} style={{ width: '210mm', minHeight: '297mm', padding: '10px', fontFamily: 'Arial, sans-serif', color: 'black', fontSize: '9pt', boxSizing: 'border-box' }}>
           
-          {/* Header Dokumen */}
-          <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
+          {/* Header */}
+          <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '5px' }}>
             <tbody>
               <tr>
-                <td rowSpan="4" style={{ width: '30%', border: '1px solid black', padding: '10px' }}>
-                  <h1 style={{ margin: 0, fontSize: '24px' }}>ASA</h1>
-                  <span style={{ fontSize: '12px' }}>PRESTIGE VISION</span>
+                <td rowSpan="4" style={{ width: '30%', border: '1px solid black', padding: '5px' }}>
+                  <h1 style={{ margin: 0, fontSize: '22pt', letterSpacing: '1px' }}>ASA</h1>
+                  <span style={{ fontSize: '7pt', letterSpacing: '2px' }}>PRESTIGE VISION</span>
                 </td>
-                <td style={{ border: '1px solid black', padding: '5px' }}>KODE DOKUMEN</td>
-                <td style={{ border: '1px solid black', padding: '5px' }}>: FR/PRJ/004</td>
+                <td style={{ border: '1px solid black', padding: '2px 4px', fontSize: '8pt', width: '20%' }}>KODE DOKUMEN</td>
+                <td style={{ border: '1px solid black', padding: '2px 4px', fontSize: '8pt', width: '50%' }}>: FR/PRJ/004</td>
               </tr>
               <tr>
-                <td style={{ border: '1px solid black', padding: '5px' }}>MULAI BERLAKU</td>
-                <td style={{ border: '1px solid black', padding: '5px' }}>: 2025</td>
+                <td style={{ border: '1px solid black', padding: '2px 4px', fontSize: '8pt' }}>MULAI BERLAKU</td>
+                <td style={{ border: '1px solid black', padding: '2px 4px', fontSize: '8pt' }}>: 2025</td>
               </tr>
-              {/* Baris lain disesuaikan layout... */}
+              <tr>
+                <td style={{ border: '1px solid black', padding: '2px 4px', fontSize: '8pt' }}>REVISI</td>
+                <td style={{ border: '1px solid black', padding: '2px 4px', fontSize: '8pt' }}>: 00</td>
+              </tr>
+              <tr>
+                <td style={{ border: '1px solid black', padding: '2px 4px', fontSize: '8pt' }}>TANGGAL REVISI</td>
+                <td style={{ border: '1px solid black', padding: '2px 4px', fontSize: '8pt' }}>: </td>
+              </tr>
+              <tr>
+                <td colSpan="3" style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '11pt', backgroundColor: '#f0f0f0', border: '1px solid black', padding: '4px' }}>
+                  LAPORAN HARIAN<br/><span style={{ fontSize: '7.5pt', fontWeight: 'normal', fontStyle: 'italic' }}>(Daily Report)</span>
+                </td>
+              </tr>
             </tbody>
           </table>
 
-          {/* Judul Laporan */}
-          <div style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '18px', marginBottom: '20px', backgroundColor: '#e5e7eb', padding: '5px', border: '1px solid black' }}>
-            LAPORAN HARIAN (Daily Report)
-          </div>
-
           {/* Info Proyek */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-            <div>
-               <p><strong>NAMA PROYEK :</strong> {formData.project}</p>
-               <p><strong>TANGGAL :</strong> {formData.date}</p>
-            </div>
-            <div>
-               <p><strong>ALAMAT PROYEK :</strong> Jl Pantai Balangan</p>
-            </div>
-          </div>
+          <table style={{ width: '100%', marginBottom: '5px' }}>
+            <tbody>
+              <tr>
+                <td style={{ width: '15%', fontWeight: 'bold', fontSize: '8pt' }}>NAMA PROYEK<br/><span style={{ fontSize: '7.5pt', fontWeight: 'normal', fontStyle: 'italic' }}>(Project Name)</span></td>
+                <td style={{ width: '35%', fontWeight: 'bold', fontSize: '9pt' }}>: {formData.project}</td>
+                <td style={{ width: '15%', fontWeight: 'bold', fontSize: '8pt' }}>ALAMAT PROYEK<br/><span style={{ fontSize: '7.5pt', fontWeight: 'normal', fontStyle: 'italic' }}>(Project Address)</span></td>
+                <td style={{ width: '35%', fontSize: '9pt' }}>: {formData.address}</td>
+              </tr>
+              <tr>
+                <td style={{ fontWeight: 'bold', fontSize: '8pt' }}>TANGGAL<br/><span style={{ fontSize: '7.5pt', fontWeight: 'normal', fontStyle: 'italic' }}>(Date)</span></td>
+                <td style={{ fontSize: '9pt' }}>: {formData.date}</td>
+                <td style={{ fontWeight: 'bold', fontSize: '8pt' }}>PERIODE<br/><span style={{ fontSize: '7.5pt', fontWeight: 'normal', fontStyle: 'italic' }}>(Period)</span></td>
+                <td style={{ fontSize: '9pt' }}>: </td>
+              </tr>
+            </tbody>
+          </table>
+
+          {/* Tabel Pekerja & Cuaca */}
+          <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '5px' }}>
+            <tbody>
+              <tr style={{ backgroundColor: '#f0f0f0', fontWeight: 'bold', fontSize: '8.5pt' }}>
+                <td style={{ border: '1px solid black', padding: '2px 4px', width: '30%' }}>JUMLAH PEKERJA <span style={{ fontSize: '7.5pt', fontWeight: 'normal', fontStyle: 'italic' }}>(Number of Workman)</span>:</td>
+                <td style={{ border: '1px solid black', padding: '2px 4px', width: '35%' }}>Kondisi Cuaca <span style={{ fontSize: '7.5pt', fontWeight: 'normal', fontStyle: 'italic' }}>(Weather)</span>:</td>
+                <td style={{ border: '1px solid black', padding: '2px 4px', width: '35%' }}>Catatan Tim Lapangan:</td>
+              </tr>
+              <tr>
+                <td style={{ border: '1px solid black', padding: '0', verticalAlign: 'top' }}>
+                    <table style={{ width: '100%', fontSize: '8pt' }}>
+                        <tbody>
+                            <tr><td>Sipil (Civil)</td><td style={{textAlign: 'right'}}>: <b>{formData.workers.civil}</b> org</td></tr>
+                            <tr><td>Subcont AC</td><td style={{textAlign: 'right'}}>: <b>{formData.workers.ac}</b> org</td></tr>
+                            <tr><td>Subcont Electric</td><td style={{textAlign: 'right'}}>: <b>{formData.workers.electric}</b> org</td></tr>
+                            <tr><td>Subcont Painting</td><td style={{textAlign: 'right'}}>: <b>{formData.workers.paint}</b> org</td></tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td style={{ border: '1px solid black', padding: '0', verticalAlign: 'top' }}>
+                    <table style={{ width: '100%', fontSize: '7.5pt', borderCollapse: 'collapse', textAlign: 'center' }}>
+                        <tbody>
+                            <tr style={{ backgroundColor: '#f9f9f9' }}>
+                                <td style={{ borderBottom: '1px solid black', borderRight: '1px solid black' }}>Kondisi (Condition)</td>
+                                <td style={{ borderBottom: '1px solid black' }}>Durasi/Waktu</td>
+                            </tr>
+                            <tr>
+                                <td style={{ borderBottom: '1px solid black', borderRight: '1px solid black' }}>Cerah (Sunny)</td>
+                                <td style={{ borderBottom: '1px solid black' }}>..... s/d .....</td>
+                            </tr>
+                            <tr>
+                                <td style={{ borderBottom: '1px solid black', borderRight: '1px solid black' }}>Berawan (Cloudy)</td>
+                                <td style={{ borderBottom: '1px solid black' }}>..... s/d .....</td>
+                            </tr>
+                            <tr>
+                                <td style={{ borderRight: '1px solid black' }}>Hujan (Rainy)</td>
+                                <td>..... s/d .....</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td style={{ border: '1px solid black', padding: '4px', fontSize: '8pt' }}>
+                    Posisi: PM / SM / SE / Site Spv<br/><br/>
+                    Catatan:
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
           {/* Tabel Pekerjaan */}
-          <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid black' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '5px' }}>
             <thead>
-              <tr style={{ backgroundColor: '#f3f4f6' }}>
-                <th style={{ border: '1px solid black', padding: '8px' }}>No</th>
-                <th style={{ border: '1px solid black', padding: '8px' }}>Item Pekerjaan (Item of Work)</th>
+              <tr style={{ backgroundColor: '#f0f0f0', fontSize: '8pt' }}>
+                <th style={{ border: '1px solid black', padding: '3px', width: '4%' }}>No</th>
+                <th style={{ border: '1px solid black', padding: '3px', width: '66%' }}>Item Pekerjaan <span style={{ fontSize: '7.5pt', fontStyle: 'italic', fontWeight:'normal' }}>(Item of Work)</span></th>
+                <th style={{ border: '1px solid black', padding: '3px', width: '30%' }}>Keterangan <span style={{ fontSize: '7.5pt', fontStyle: 'italic', fontWeight:'normal' }}>(Remark)</span></th>
               </tr>
             </thead>
             <tbody>
-              <tr><td colSpan="2" style={{ border: '1px solid black', padding: '5px', fontWeight: 'bold' }}>Villa 13</td></tr>
+              <tr><td colSpan="3" style={{ border: '1px solid black', padding: '3px', fontWeight: 'bold', backgroundColor: '#fafafa', fontSize: '8.5pt' }}>VILLA 13</td></tr>
               {formData.villa13.map((item, idx) => (
                 <tr key={idx}>
-                  <td style={{ border: '1px solid black', padding: '5px', textAlign: 'center' }}>{idx + 1}</td>
-                  <td style={{ border: '1px solid black', padding: '5px' }}>{item}</td>
+                  <td style={{ border: '1px solid black', padding: '2px', textAlign: 'center', fontSize: '8pt' }}>{idx + 1}</td>
+                  <td style={{ border: '1px solid black', padding: '2px 4px', fontSize: '8pt' }}>{item}</td>
+                  <td style={{ border: '1px solid black', padding: '2px' }}></td>
+                </tr>
+              ))}
+              <tr><td colSpan="3" style={{ border: '1px solid black', padding: '3px', fontWeight: 'bold', backgroundColor: '#fafafa', fontSize: '8.5pt' }}>VILLA 15</td></tr>
+              {formData.villa15.map((item, idx) => (
+                <tr key={idx}>
+                  <td style={{ border: '1px solid black', padding: '2px', textAlign: 'center', fontSize: '8pt' }}>{idx + 1}</td>
+                  <td style={{ border: '1px solid black', padding: '2px 4px', fontSize: '8pt' }}>{item}</td>
+                  <td style={{ border: '1px solid black', padding: '2px' }}></td>
                 </tr>
               ))}
             </tbody>
           </table>
 
+          {/* Tabel Peralatan & Material */}
+          <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '5px' }}>
+             <thead>
+                <tr style={{ backgroundColor: '#f0f0f0', fontSize: '8pt' }}>
+                   <th style={{ border: '1px solid black', padding: '3px', width: '50%' }}>Peralatan Kerja <span style={{ fontSize: '7.5pt', fontStyle: 'italic', fontWeight:'normal' }}>(Equipment)</span></th>
+                   <th style={{ border: '1px solid black', padding: '3px', width: '50%' }}>Material <span style={{ fontSize: '7.5pt', fontStyle: 'italic', fontWeight:'normal' }}>(Material)</span></th>
+                </tr>
+             </thead>
+             <tbody>
+                <tr>
+                   <td style={{ border: '1px solid black', padding: '4px', fontSize: '8.5pt', lineHeight: '1.3', textAlign: 'justify' }}>
+                     {formData.equipment}
+                   </td>
+                   <td style={{ border: '1px solid black', padding: '4px', fontSize: '8.5pt', lineHeight: '1.3', textAlign: 'justify' }}>
+                     {formData.materials}
+                   </td>
+                </tr>
+             </tbody>
+          </table>
+
           {/* Tanda Tangan */}
-          <div style={{ display: 'flex', marginTop: '40px', justifyContent: 'space-between' }}>
-             <div style={{ border: '1px solid black', width: '30%', height: '100px', padding: '10px', textAlign: 'center', position: 'relative' }}>
-                <p style={{ fontSize: '12px' }}>Dibuat oleh (Site Spv)</p>
-                <div style={{ position: 'absolute', bottom: '10px', width: '100%' }}>Tanggal: .............</div>
-             </div>
-             {/* Kotak tanda tangan lainnya */}
-          </div>
+          <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px' }}>
+            <tbody>
+                <tr>
+                    <td style={{ border: '1px solid black', padding: '4px', width: '33.3%', height: '50px', verticalAlign: 'bottom', textAlign: 'center', fontSize: '8pt' }}>
+                        Dibuat oleh,<br/><br/><br/><br/>Site Engineer / Site Spv<br/>Tanggal :
+                    </td>
+                    <td style={{ border: '1px solid black', padding: '4px', width: '33.3%', height: '50px', verticalAlign: 'bottom', textAlign: 'center', fontSize: '8pt' }}>
+                        Diketahui oleh,<br/><br/><br/><br/>Project Manager / Site Manager<br/>Tanggal :
+                    </td>
+                    <td style={{ border: '1px solid black', padding: '4px', width: '33.3%', height: '50px', verticalAlign: 'bottom', textAlign: 'center', fontSize: '8pt' }}>
+                        Diterima oleh,<br/><br/><br/><br/>Owner / Consultant<br/>Tanggal :
+                    </td>
+                </tr>
+            </tbody>
+          </table>
+
         </div>
       </div>
     </div>
